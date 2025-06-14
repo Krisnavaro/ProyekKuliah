@@ -1,0 +1,9 @@
+id dan pw admin
+
+admin_jasa@djayaspalt.com
+admin123
+
+id dan pw pelanggan
+
+pelanggan_satu@djayaspalt.com
+passpelanggan

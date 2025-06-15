@@ -1,98 +1,64 @@
 <?= $this->extend('layout/admin_main') ?>
 <?= $this->section('content') ?>
+
 <div class="container py-4">
     <div class="d-flex align-items-center mb-4">
         <a href="javascript:history.back()" class="me-3">
             <img src="<?= base_url('assets/Back-01.png') ?>" width="43" alt="Back">
         </a>
-        <h2 class="mb-0">Pembayaran</h2>
+        <h2 class="mb-0">Data Pembayaran</h2>
     </div>
 
     <div class="admin-table p-4 mb-4">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h4 class="mb-0 fw-bold">Data Pembayaran bulan Desember</h4>
+            <h4 class="mb-0 fw-bold">Daftar Semua Pembayaran</h4>
             <div>
-                <button class="btn btn-sm btn-light btn-table"><img src="<?= base_url('assets/search_icon.png') ?>" width="18" alt="Cari"> Cari</button>
+                 <a href="<?= base_url('admin/pembayaran/bukti') ?>" class="btn btn-sm btn-info btn-table"><img src="<?= base_url('assets/bukti_pembayaran_icon.png') ?>" width="18" alt="Bukti Pembayaran"> Lihat Bukti</a>
                 <button class="btn btn-sm btn-success btn-table"><img src="<?= base_url('assets/plus_icon.png') ?>" width="18" alt="Tambahkan"> Tambahkan</button>
-                <button class="btn btn-sm btn-info btn-table"><img src="<?= base_url('assets/bukti_pembayaran_icon.png') ?>" width="18" alt="Bukti Pembayaran"> Bukti Pembayaran</button>
-                <button class="btn btn-sm btn-info btn-table"><img src="<?= base_url('assets/view_icon.png') ?>" width="18" alt="View"> View</button>
-                <button class="btn btn-sm btn-warning btn-table"><img src="<?= base_url('assets/edit_icon.png') ?>" width="18" alt="Edit"> Edit</button>
-                <button class="btn btn-sm btn-danger btn-table"><img src="<?= base_url('assets/delete_icon.png') ?>" width="18" alt="Hapus"> Hapus</button>
             </div>
         </div>
-        <div class="table-responsive">
-            <table class="table table-bordered">
+        
+        <?php if (!empty($pembayaran_list)): ?>
+            <table>
                 <thead>
-                    <tr class="table-dark">
-                        <th>Id Bayar</th>
-                        <th>Id Pesanan</th>
-                        <th>Id Sewa</th>
-                        <th>Tanggal Pembayaran</th>
-                        <th>Metode Pembayaran</th>
-                        <th>No Rekening</th>
+                    <tr>
+                        <th>ID Bayar</th>
+                        <th>ID Pesanan</th>
+                        <th>ID Sewa</th>
+                        <th>Tanggal Bayar</th>
+                        <th>Metode</th>
+                        <th>No. Rekening</th>
+                        <th>Total Harga</th>
+                        <th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php if (!empty($bulan_desember)): ?>
-                        <?php foreach ($bulan_desember as $pembayaran): ?>
-                            <tr>
-                                <td><?= esc($pembayaran['id_bayar']) ?></td>
-                                <td><?= esc($pembayaran['id_pesanan']) ?></td>
-                                <td><?= esc($pembayaran['id_sewa']) ?></td>
-                                <td><?= esc($pembayaran['tanggal_pembayaran']) ?></td>
-                                <td><?= esc($pembayaran['metode_pembayaran']) ?></td>
-                                <td><?= esc($pembayaran['no_rekening']) ?></td>
-                            </tr>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <tr><td colspan="6" class="text-center">Tidak ada data pembayaran bulan Desember.</td></tr>
-                    <?php endif; ?>
+                    <?php foreach ($pembayaran_list as $item): ?>
+                        <tr>
+                            <td><?= esc($item['id_bayar']) ?></td>
+                            <td><?= esc($item['id_pesanan']) ?: '-' ?></td>
+                            <td><?= esc($item['id_sewa']) ?: '-' ?></td>
+                            <td><?= esc($item['tanggal_pembayaran']) ?></td>
+                            <td><?= esc($item['metode_pembayaran']) ?></td>
+                            <td><?= esc($item['no_rekening']) ?></td>
+                            <td>Rp <?= number_format(esc($item['total_harga']), 0, ',', '.') ?></td>
+                            <td>
+                                <button class="btn btn-sm btn-warning btn-table">Edit</button>
+                                <button class="btn btn-sm btn-danger btn-table">Hapus</button>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
                 </tbody>
             </table>
-        </div>
-        <div class="text-center mt-3">
-            <i class="fas fa-chevron-down fa-2x"></i>
-        </div>
-    </div>
-
-    <div class="admin-table p-4 mb-4">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h4 class="mb-0 fw-bold">Data Pembayaran bulan November</h4>
-            <div>
-                <button class="btn btn-sm btn-light btn-table"><img src="<?= base_url('assets/search_icon.png') ?>" width="18" alt="Cari"> Cari</button>
-                <button class="btn btn-sm btn-success btn-table"><img src="<?= base_url('assets/plus_icon.png') ?>" width="18" alt="Tambahkan"> Tambahkan</button>
-                <button class="btn btn-sm btn-info btn-table"><img src="<?= base_url('assets/bukti_pembayaran_icon.png') ?>" width="18" alt="Bukti Pembayaran"> Bukti Pembayaran</button>
-                <button class="btn btn-sm btn-info btn-table"><img src="<?= base_url('assets/view_icon.png') ?>" width="18" alt="View"> View</button>
-                <button class="btn btn-sm btn-warning btn-table"><img src="<?= base_url('assets/edit_icon.png') ?>" width="18" alt="Edit"> Edit</button>
-                <button class="btn btn-sm btn-danger btn-table"><img src="<?= base_url('assets/delete_icon.png') ?>" width="18" alt="Hapus"> Hapus</button>
-            </div>
-        </div>
-        <?php if ($bulan_november_ada_data): ?>
-        <div class="table-responsive">
-            <table class="table table-bordered">
-                <thead>
-                    <tr class="table-dark">
-                        <th>Id Bayar</th>
-                        <th>Id Pesanan</th>
-                        <th>Id Sewa</th>
-                        <th>Tanggal Pembayaran</th>
-                        <th>Metode Pembayaran</th>
-                        <th>No Rekening</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    </tbody>
-            </table>
-        </div>
         <?php else: ?>
             <div class="text-center mt-5">
-                <img src="<?= base_url('assets/table_cat_animated.gif') ?>" alt="Tidak Ada Data" class="cat-illustration">
-                <h4 class="text-danger mt-3 fw-bold">Tidak Ada Pembayaran</h4>
+                <img src="<?= base_url('assets/table_cat_animated.gif') ?>" alt="Tidak Ada Data" style="max-width: 150px;">
+                <h4 class="text-danger mt-3 fw-bold">Belum Ada Data Pembayaran</h4>
+                <p>Belum ada transaksi pembayaran yang tercatat di database.</p>
             </div>
         <?php endif; ?>
-        <div class="text-center mt-3">
-            <i class="fas fa-chevron-down fa-2x"></i>
-        </div>
+
     </div>
 </div>
+
 <?= $this->endSection() ?>

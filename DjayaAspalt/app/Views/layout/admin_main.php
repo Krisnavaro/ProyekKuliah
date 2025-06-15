@@ -92,6 +92,7 @@
         padding: 8px 0;
         cursor: pointer;
         transition: background-color 0.2s;
+        display: block; /* <-- INI PERBAIKANNYA */
     }
     .admin-profile-dropdown .menu-item:hover {
         background-color: #f9f9f9;

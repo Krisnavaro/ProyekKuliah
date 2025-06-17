@@ -14,9 +14,9 @@
       background-color: #ffffff;
       border-right: 1px solid #dee2e6;
       padding-top: 1rem;
-      position: fixed; /* Membuat sidebar tetap */
+      position: fixed; 
       height: 100%;
-      overflow-y: auto; /* Agar sidebar bisa di-scroll jika kontennya panjang */
+      overflow-y: auto; 
     }
     .sidebar a {
       display: block;
@@ -30,7 +30,7 @@
       transition: 0.2s;
     }
     .main-content-wrapper {
-      margin-left: 200px; /* Offset untuk sidebar fixed */
+      margin-left: 200px; 
       flex-grow: 1;
     }
     .topbar {
@@ -38,27 +38,27 @@
       padding: 12px 20px;
       border-bottom: 1px solid #dee2e6;
       display: flex;
-      justify-content: space-between; /* Menjaga elemen terpencar */
+      justify-content: space-between; 
       align-items: center;
     }
     .topbar .search-box {
-      width: 550px; /* Diperpanjang dari 400px */
-      margin: 0 auto; /* Menengahkan search box */
+      width: 550px; 
+      margin: 0 auto; 
     }
     .topbar input { width: 100%; font-size: 14px; }
     .topbar .icon-group {
         display: flex;
-        gap: 15px; /* Jarak antar ikon diperbesar */
+        gap: 15px; 
         align-items: center;
     }
     .topbar .icon-group img {
         cursor: pointer;
-        width: 30px; /* Ukuran ikon keranjang diperbesar */
+        width: 30px; 
         height: auto;
     }
     .topbar .icon-group img[alt="Profile"],
     .topbar .icon-group img[alt="Login"] {
-        width: 50px; /* Ukuran ikon profil diperbesar */
+        width: 50px; 
     }
     .main-content { padding: 30px; }
 
@@ -98,13 +98,14 @@
           <strong>Username:</strong> <?= session()->get('username') ?> | 
           <strong>Role Tersimpan di Sesi:</strong> '<?= session()->get('role') ?>'
       </div>
-      <div style="height: 60px;"></div> <?php endif; ?>
+      <div style="height: 60px;"></div>
+  <?php endif; ?>
+
   <div class="d-flex">
     <div class="sidebar">
       <div class="text-center mb-4">
         <img src="<?= base_url('assets/logoSamping1.png') ?>" width="140" alt="Logo">
       </div>
-
       <a href="<?= base_url('dashboard') ?>">🏠 Home</a>
       <a href="<?= base_url('gallery') ?>">🖼️ Gallery</a>
       <a href="<?= base_url('hubungi-kami') ?>">📞 Hubungi Kami</a>
@@ -125,7 +126,6 @@
         <div class="search-box">
           <input class="form-control" type="search" name="q" placeholder="Cari nama...">
         </div>
-
         <div class="icon-group">
             <a href="javascript:history.back()">
                 <img src="<?= base_url('assets/Back-01.png') ?>" width="43" alt="Back">
@@ -222,10 +222,10 @@
 
         loginOrProfileIcon.addEventListener('click', function() {
             <?php if (session()->get('logged_in')): ?>
-                // Jika sudah login, bisa tambahkan logika dropdown profil di sini
-                // Untuk sekarang, kita biarkan kosong atau arahkan ke profil
+                // Jika sudah login, arahkan ke halaman profil
                 window.location.href = '<?= base_url('customer-profile') ?>';
             <?php else: ?>
+                // PERUBAHAN DI SINI: Langsung tampilkan modal login, bukan pilihan
                 loginModal.show();
             <?php endif; ?>
         });

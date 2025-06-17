@@ -3,8 +3,8 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
-use App\Models\UserModel;
 use CodeIgniter\HTTP\RedirectResponse;
+// use App\Models\UserModel; // Uncomment ini jika Anda sudah membuat UserModel
 
 class Register extends BaseController
 {
@@ -16,16 +16,18 @@ class Register extends BaseController
         return view('register');
     }
 
-    public function process(): RedirectResponse|string
+    public function registerUser(): RedirectResponse|string
     {
         helper(['form', 'url']);
 
-        // Aturan validasi untuk semua field, termasuk email
+        // PENTING: Aturan 'is_unique' di bawah ini sudah DIHAPUS karena Anda belum ada database.
+        // Jika nanti sudah ada database, Anda harus menambahkan kembali 'is_unique'
+        // dan mengkonfigurasi koneksi database Anda.
         $rules = [
             'nama_lengkap' => 'required|max_length[100]',
-            'username'     => 'required|max_length[50]|is_unique[users.username]',
-            'email'        => 'required|valid_email|is_unique[users.email]',
-            'password'     => 'required|min_length[6]',
+            'no_handphone' => 'required|numeric|min_length[10]|max_length[15]',
+            'email' => 'required|valid_email',
+            'password' => 'required|min_length[6]',
             'pass_confirm' => 'required_with[password]|matches[password]',
         ];
 
@@ -34,21 +36,10 @@ class Register extends BaseController
                 'validation' => $this->validator,
             ]);
         } else {
-            $model = new UserModel();
-
-            // Siapkan data untuk disimpan, termasuk email
-            $newData = [
-                'nama_lengkap' => $this->request->getPost('nama_lengkap'),
-                'username'     => $this->request->getPost('username'),
-                'email'        => $this->request->getPost('email'),
-                'password'     => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
-                'role'         => 'pelanggan',
-            ];
-
-            $model->save($newData);
-
-            session()->setFlashdata('success_register', 'Pendaftaran berhasil! Silakan login.');
-            return redirect()->to('/login');
+            // Karena kita belum setup database/model, kita simulasikan sukses.
+            // Data tidak benar-benar tersimpan permanen.
+            session()->setFlashdata('success_register', true); // Flag untuk modal sukses
+            return redirect()->to('/dashboard'); // Arahkan ke dashboard untuk menampilkan modal
         }
     }
 }

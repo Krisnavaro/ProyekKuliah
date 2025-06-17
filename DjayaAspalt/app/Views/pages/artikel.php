@@ -10,7 +10,7 @@
 
     <div class="row">
         <div class="col-lg-2 text-center d-none d-lg-block">
-            <img src="<?= base_url('assets/worker_with_shovel.png') ?>" class="img-fluid mt-5" style="max-width: 120px;" alt="Worker with Shovel">
+            <img src="<?= base_url('assets/worker_with_shovel_animated.gif') ?>" class="img-fluid mt-5" style="max-width: 120px;" alt="Worker with Shovel">
         </div>
 
         <div class="col-lg-10">

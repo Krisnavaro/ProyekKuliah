@@ -1,16 +1,8 @@
-#--------------------------------------------------------------------
-# ENVIRONMENT
-#--------------------------------------------------------------------
-
+# --- Lingkungan Pengembangan ---
 CI_ENVIRONMENT = development
 
-#--------------------------------------------------------------------
-# APP
-#--------------------------------------------------------------------
-
-# Di baris ini, Anda perlu memasukkan URL dasar situs Anda setelah dijalankan di server.
-# Contoh: app.baseURL = 'http://localhost:8080'
-app.baseURL = ''
+# --- URL Dasar Aplikasi ---
+app.baseURL = 'http://localhost:8080'
 
 #--------------------------------------------------------------------
 # DATABASE
@@ -21,21 +13,9 @@ database.default.database = pengaspalan
 database.default.username = root
 database.default.password = 
 database.default.DBDriver = MySQLi
-database.default.DBPrefix =
-database.default.port = 3306
 
 #--------------------------------------------------------------------
 # ENCRYPTION
 #--------------------------------------------------------------------
-
-# Anda perlu membuat kunci enkripsi agar sesi dan cookie aman.
-# Anda bisa membuat kunci acak (32 karakter) dan menempelkannya di sini.
-# Contoh: encryption.key = hex2bin:f96c75a6c1e9a4f8b3d7a2c8e0b4a1d5f96c75a6c1e9a4f8b3d7a2c8e0b4a1d5
-encryption.key = 
-
-#--------------------------------------------------------------------
-# SESSION
-#--------------------------------------------------------------------
-
-session.driver = 'CodeIgniter\Session\Handlers\FileHandler'
-session.savePath = null
+# Pastikan baris ini sudah terisi setelah Anda menjalankan 'php spark key:generate'
+encryption.key = hex2bin:0b3a8150a7e4dad5851436e818c898a01dba3b49dd22303230fb6bf114edf28a

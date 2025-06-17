@@ -1,4 +1,5 @@
 <?php
+// KODE FINAL UNTUK pages.php
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
@@ -30,6 +31,13 @@ class Pages extends BaseController
 
     // Halaman-halaman yang bebas diakses tanpa login (atau diizinkan oleh filter di Routes.php)
     public function dashboard() {
+        // Cek dulu apakah ada yang login dan rolenya admin.
+        if (session()->get('logged_in') && session()->get('role') === 'admin') {
+            // Jika ya, jangan tampilkan dashboard pelanggan, tapi langsung
+            // arahkan ke dashboard admin yang seharusnya.
+            return redirect()->to('admin');
+        }
+
         $data = [];
         // Cek jika ada flashdata success_register dari Register Controller
         if (session()->getFlashdata('success_register')) {
@@ -156,42 +164,5 @@ class Pages extends BaseController
         $data['alat_nama'] = str_replace('-', ' ', $alat);
         $data['harga_per_hari'] = 850000; // Contoh harga
         return view('pages/penyewaan_form', $data);
-    }
-
-
-    // Metode untuk menampilkan Modal Pembayaran
-    public function showPaymentMethodModal() {
-        // Ini akan dipanggil via JavaScript atau langsung di dalam view
-        // Untuk tujuan ini, kita akan membuat modal di dalam keranjang.php
-    }
-
-    // Metode untuk menampilkan Modal QRIS
-    public function showQrisModal() {
-        // Untuk tujuan ini, kita akan membuat modal di dalam keranjang.php
-    }
-
-    // Metode untuk menampilkan Modal Loading Pembayaran
-    public function showLoadingModal() {
-        // Untuk tujuan ini, kita akan membuat modal di dalam keranjang.php
-    }
-
-    // Metode untuk menampilkan Modal Pembayaran Berhasil
-    public function showSuccessPaymentModal() {
-        // Untuk tujuan ini, kita akan membuat modal di dalam keranjang.php
-    }
-
-    // Metode untuk menampilkan Modal Berhasil Ditambahkan Keranjang/Selesai Sewa
-    public function showAddedToCartModal() {
-        // Untuk tujuan ini, kita akan membuat modal di dalam keranjang.php atau pemesanan_paket.php
-    }
-
-    // Metode untuk menampilkan Modal Konfirmasi Hapus
-    public function showDeleteConfirmModal() {
-        // Untuk tujuan ini, kita akan membuat modal di dalam keranjang.php
-    }
-
-    // Metode untuk menampilkan Modal Sewaan Selesai
-    public function showRentalFinishedModal() {
-        // Untuk tujuan ini, kita akan membuat modal di dalam histori_penyewaan.php
     }
 }

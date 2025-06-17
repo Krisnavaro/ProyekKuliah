@@ -37,7 +37,6 @@
                             <td><?= esc($item['id_pelaksanaan']) ?></td>
                             <td>
                                 <?php
-                                    // Cari nama pelanggan di dalam map berdasarkan id_pelanggan
                                     $nama_pelanggan = $customer_map[$item['id_pelanggan']] ?? 'Pelanggan Dihapus';
                                     echo esc($nama_pelanggan);
                                 ?>
@@ -46,8 +45,8 @@
                             <td><?= esc($item['alamat_pelaksanaan']) ?></td>
                             <td><?= esc($item['waktu_pengerjaan']) ?></td>
                             <td>
-                                <button class="btn btn-sm btn-warning btn-table">Edit</button>
-                                <button class="btn btn-sm btn-danger btn-table">Hapus</button>
+                                <a href="<?= base_url('admin/pelaksanaan/edit/' . $item['id_pelaksanaan']) ?>" class="btn btn-sm btn-warning btn-table">Edit</a>
+                                <a href="<?= base_url('admin/pelaksanaan/hapus/' . $item['id_pelaksanaan']) ?>" class="btn btn-sm btn-danger btn-table" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">Hapus</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>

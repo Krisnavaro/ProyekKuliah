@@ -12,12 +12,13 @@
     <div class="card p-4 shadow-sm">
         <div class="row">
             <div class="col-md-3 text-center">
-                <img src="<?= base_url('assets/admin_profile_pic.png') ?>" class="img-fluid rounded-circle mb-3" alt="Admin Avatar" style="width: 150px; height: 150px; object-fit: cover;">
-                <button class="btn btn-secondary btn-sm">Ubah Foto</button>
+                
+                <img src="<?= $foto_profil ? base_url('uploads/avatars/' . $foto_profil) : base_url('assets/admin_profile_pic.png') ?>" class="img-fluid rounded-circle mb-3" alt="Admin Avatar" style="width: 180px; height: 180px; object-fit: cover;">
+                
             </div>
             <div class="col-md-9">
                 <h4 class="fw-bold"><?= esc($nama_lengkap) ?></h4>
-                <p class="text-muted"><?= esc($role) ?></p>
+                <p class="text-muted"><?= esc(ucfirst($role)) ?></p>
                 <hr>
                 <div class="row">
                     <div class="col-6">

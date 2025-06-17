@@ -1,0 +1,12 @@
+username/gmail dan pw admin
+
+admin/admin_jasa@djayaspalt.com
+admin123
+
+krisna_admin/krisna.admin@djayaaspalt.com
+admin_krisna
+
+username/gmail dan pw pelanggan
+
+krisna_pelanggan/krisna.pelanggan@djayaaspalt.com
+pelanggan_krisna

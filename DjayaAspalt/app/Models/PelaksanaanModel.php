@@ -14,12 +14,19 @@ class PelaksanaanModel extends Model
     ];
 
     /**
-     * Mengambil semua data pelaksanaan dengan menggabungkan data pelanggan.
+     * Mengambil semua data pelaksanaan dengan menggabungkan data pengguna (users).
+     * INI FUNGSI YANG DIPERBAIKI DENGAN SELECT EKSPLISIT
      */
     public function getPelaksanaanWithPelanggan()
     {
-        return $this->select('pelaksanaan.*, pelanggan.nama_lengkap')
-                    ->join('pelanggan', 'pelanggan.id_pelanggan = pelaksanaan.id_pelanggan', 'left')
+        return $this->select('
+                        pelaksanaan.id_pelaksanaan, 
+                        pelaksanaan.tanggal_pelaksanaan, 
+                        pelaksanaan.alamat_pelaksanaan, 
+                        pelaksanaan.waktu_pengerjaan, 
+                        users.nama_lengkap
+                    ')
+                    ->join('users', 'users.id = pelaksanaan.id_pelanggan', 'left')
                     ->findAll();
     }
 }

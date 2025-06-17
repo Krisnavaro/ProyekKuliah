@@ -92,15 +92,6 @@
 </head>
 <body>
 
-  <?php if (session()->get('logged_in')): ?>
-      <div style="background: yellow; color: black; padding: 15px; text-align: center; font-family: monospace; font-size: 16px; position: fixed; top: 0; width: 100%; z-index: 9999; border-bottom: 2px solid black;">
-          <strong>DEBUG INFO:</strong> Anda Login Sebagai | 
-          <strong>Username:</strong> <?= session()->get('username') ?> | 
-          <strong>Role Tersimpan di Sesi:</strong> '<?= session()->get('role') ?>'
-      </div>
-      <div style="height: 60px;"></div>
-  <?php endif; ?>
-
   <div class="d-flex">
     <div class="sidebar">
       <div class="text-center mb-4">

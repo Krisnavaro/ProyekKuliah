@@ -44,9 +44,7 @@ class Admin extends BaseController
         $userModel = new UserModel();
         $adminId = session()->get('user_id');
 
-        // 1. Proses Upload Foto (jika ada file yang diunggah)
         $fileFoto = $this->request->getFile('foto_profil');
-
         if ($fileFoto && $fileFoto->isValid() && !$fileFoto->hasMoved()) {
             $validationRule = [
                 'foto_profil' => [
@@ -55,7 +53,7 @@ class Admin extends BaseController
             ];
             if ($this->validate($validationRule)) {
                 $userLama = $userModel->find($adminId);
-                if ($userLama['foto_profil'] && file_exists('uploads/avatars/' . $userLama['foto_profil'])) {
+                if ($userLama && !empty($userLama['foto_profil']) && file_exists('uploads/avatars/' . $userLama['foto_profil'])) {
                     unlink('uploads/avatars/' . $userLama['foto_profil']);
                 }
                 $namaFotoBaru = $fileFoto->getRandomName();
@@ -65,12 +63,11 @@ class Admin extends BaseController
             }
         }
 
-        // 2. Proses Update Data Teks
-        $dataUpdate = [
-            'nama_lengkap' => $this->request->getPost('nama_lengkap'),
-        ];
-        $userModel->update($adminId, $dataUpdate);
-        session()->set('nama_lengkap', $dataUpdate['nama_lengkap']);
+        $dataUpdate = [ 'nama_lengkap' => $this->request->getPost('nama_lengkap'), ];
+        if(!empty($dataUpdate['nama_lengkap'])) {
+            $userModel->update($adminId, $dataUpdate);
+            session()->set('nama_lengkap', $dataUpdate['nama_lengkap']);
+        }
 
         session()->setFlashdata('success', 'Profil admin berhasil diperbarui!');
         return redirect()->to('admin/profile');
@@ -80,7 +77,7 @@ class Admin extends BaseController
     public function manajemenPengguna(): string
     {
         $model = new UserModel();
-        $data['pelanggan_list'] = $model->where('role', 'pelanggan')->findAll();
+        $data['pelanggan_list'] = $model->where('role', 'customer')->findAll();
         return view('admin/manajemen_pengguna', $data);
     }
     
@@ -91,9 +88,10 @@ class Admin extends BaseController
     }
 
     // Menyimpan data pelanggan baru
-    public function simpanPelanggan(): \CodeIgniter\HTTP\RedirectResponse
+    public function simpanPelanggan()
     {
         $userModel = new UserModel();
+        
         $rules = [
             'nama_lengkap' => 'required|max_length[100]',
             'username'     => 'required|max_length[50]|is_unique[users.username]',
@@ -110,57 +108,92 @@ class Admin extends BaseController
             'username'     => $this->request->getPost('username'),
             'email'        => $this->request->getPost('email'),
             'password'     => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
-            'role'         => 'pelanggan',
+            'role'         => 'customer',
         ]);
-
-        return redirect()->to('/admin/pelanggan')->with('success', 'Data pelanggan baru berhasil ditambahkan.');
-    }
-
-    // Menampilkan daftar pelaksanaan dari database
-    public function pelaksanaan(): string
-    {
-        $model = new PelaksanaanModel();
-        $data['pelaksanaan_list'] = $model->getPelaksanaanWithPelanggan();
-        return view('admin/pelaksanaan', $data);
-    }
-
-    // Menampilkan daftar penyewaan dari database
-    public function penyewaan(): string
-    {
-        $model = new PenyewaanModel();
-        $data['penyewaan_list'] = $model->getPenyewaanWithDetails();
-        return view('admin/penyewaan', $data);
-    }
-
-    // Menampilkan daftar alat dari database
-    public function cekStokAlat(): string
-    {
-        $model = new AlatModel();
-        $data['alat_list'] = $model->findAll();
-        return view('admin/cek_stok_alat', $data);
-    }
-
-    // Menampilkan daftar pembayaran dari database
-    public function pembayaran(): string
-    {
-        $model = new PembayaranModel();
-        $data['pembayaran_list'] = $model->findAll();
-        return view('admin/pembayaran', $data);
-    }
-
-    // Menampilkan daftar pemesanan dari database
-    public function pemesanan(): string
-    {
-        $model = new PemesananModel();
-        $data['pemesanan_list'] = $model->getPemesananWithDetails();
-        return view('admin/pemesanan', $data);
+        return redirect()->to('/admin/pelanggan')->with('success', 'Data klien baru berhasil ditambahkan.');
     }
     
-    // Menampilkan daftar pengembalian dari database
-    public function pengembalian(): string
+    // Menampilkan form edit
+    public function editPelanggan($id)
     {
-        $model = new PengembalianModel();
-        $data['pengembalian_list'] = $model->getPengembalianWithDetails();
-        return view('admin/pengembalian', $data);
+        $userModel = new UserModel();
+        $data['pelanggan'] = $userModel->find($id);
+
+        if (empty($data['pelanggan'])) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException('Klien dengan ID ' . $id . ' tidak ditemukan');
+        }
+
+        return view('admin/edit_pelanggan', $data);
+    }
+
+    // Menyimpan update data pelanggan
+    public function updatePelanggan()
+    {
+        $userModel = new UserModel();
+        $id = $this->request->getPost('id_pelanggan');
+
+        $data = [
+            'nama_lengkap' => $this->request->getPost('nama_lengkap'),
+            'username'     => $this->request->getPost('username'),
+            'email'        => $this->request->getPost('email'),
+        ];
+
+        $password = $this->request->getPost('password');
+        if (!empty($password)) {
+            $data['password'] = password_hash($password, PASSWORD_DEFAULT);
+        }
+
+        $userModel->update($id, $data);
+        return redirect()->to('/admin/pelanggan')->with('success', 'Data klien berhasil diperbarui.');
+    }
+    
+    // Menghapus pelanggan
+    public function hapusPelanggan($id)
+    {
+        $userModel = new UserModel();
+        $userModel->delete($id);
+        return redirect()->to('/admin/pelanggan')->with('success', 'Data klien berhasil dihapus.');
+    }
+
+    // Menampilkan daftar pelaksanaan
+    public function pelaksanaan(): string
+    {
+        $pelaksanaanModel = new PelaksanaanModel();
+        $userModel = new UserModel();
+
+        $data['pelaksanaan_list'] = $pelaksanaanModel->findAll();
+        $customers = $userModel->where('role', 'customer')->findAll();
+        
+        $customer_map = [];
+        foreach ($customers as $customer) {
+            $customer_map[$customer['id']] = $customer['nama_lengkap'];
+        }
+        $data['customer_map'] = $customer_map;
+
+        return view('admin/pelaksanaan', $data);
+    }
+    
+    // Menampilkan form tambah pelaksanaan
+    public function tambahPelaksanaan(): string
+    {
+        $userModel = new UserModel();
+        $data['pelanggan_list'] = $userModel->where('role', 'customer')->findAll();
+        return view('admin/tambah_pelaksanaan', $data);
+    }
+
+    // Menyimpan data pelaksanaan baru
+    public function simpanPelaksanaan()
+    {
+        $pelaksanaanModel = new PelaksanaanModel();
+        
+        $data = [
+            'id_pelanggan'         => $this->request->getPost('id_pelanggan'),
+            'tanggal_pelaksanaan'  => $this->request->getPost('tanggal_pelaksanaan'),
+            'alamat_pelaksanaan'   => $this->request->getPost('alamat_pelaksanaan'),
+            'waktu_pengerjaan'     => $this->request->getPost('waktu_pengerjaan'),
+        ];
+
+        $pelaksanaanModel->save($data);
+        return redirect()->to('/admin/pelaksanaan')->with('success', 'Data pelaksanaan baru berhasil ditambahkan.');
     }
 }

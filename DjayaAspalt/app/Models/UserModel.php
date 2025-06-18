@@ -21,7 +21,6 @@ class UserModel extends Model
         'foto_profil'
     ];
 
-    // --- INI PERBAIKANNYA ---
     // Kita nonaktifkan fitur timestamp otomatis karena kolomnya tidak ada di database Anda
     protected $useTimestamps = false;
 }

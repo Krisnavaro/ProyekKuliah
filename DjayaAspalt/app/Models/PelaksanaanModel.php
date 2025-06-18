@@ -26,7 +26,7 @@ class PelaksanaanModel extends Model
                         pelaksanaan.waktu_pengerjaan, 
                         users.nama_lengkap
                     ')
-                    ->join('users', 'users.id = pelaksanaan.id_pelanggan', 'left')
+                    ->join('users', 'users.id = pelaksanaan.id_pelanggan', 'left') // Ganti 'pelanggan' ke 'users'
                     ->findAll();
     }
 }

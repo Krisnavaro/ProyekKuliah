@@ -24,28 +24,27 @@ class Login extends BaseController
 
     public function login()
     {
-        $email = $this->request->getPost('username');
+        $email = $this->request->getPost('username'); // Nama field dari form adalah 'username', yang diisi email
         $password = $this->request->getPost('password');
 
-        $users = [
-            'admin_jasa@djayaspalt.com' => ['id' => 1, 'password' => 'admin123', 'role' => 'admin', 'nama' => 'Admin Utama'],
-            'pelanggan_satu@djayaspalt.com' => ['id' => 2, 'password' => 'passpelanggan', 'role' => 'customer', 'nama' => 'Pelanggan Satu'],
-        ];
+        // Menggunakan UserModel untuk otentikasi
+        $userModel = new \App\Models\UserModel(); // Pastikan Anda menggunakan UserModel yang sudah dimuat
 
-        if (array_key_exists($email, $users) && $users[$email]['password'] === $password) {
-            $userId = $users[$email]['id'];
-            $userRole = $users[$email]['role'];
-            $userName = $users[$email]['nama'];
+        // Mencari user berdasarkan email
+        $user = $userModel->where('email', $email)->first(); // Cari berdasarkan email
 
+        if ($user && password_verify($password, $user['password'])) { // Verifikasi password
             session()->set([
-                'user_id'    => $userId,
-                'email'      => $email,
-                'nama'       => $userName,
-                'role'       => $userRole,
-                'logged_in'  => true,
+                'user_id'      => $user['id'],
+                'username'     => $user['username'], // Simpan username juga jika perlu
+                'email'        => $user['email'],
+                'nama_lengkap' => $user['nama_lengkap'], // Ambil nama lengkap dari database
+                'role'         => $user['role'],
+                'foto_profil'  => $user['foto_profil'],
+                'logged_in'    => true,
             ]);
 
-            if ($userRole === 'admin') {
+            if ($user['role'] === 'admin') {
                 return redirect()->to('admin');
             } else {
                 return redirect()->to('dashboard');

@@ -8,7 +8,7 @@ use App\Models\PelaksanaanModel;
 use App\Models\PenyewaanModel;
 use App\Models\AlatModel;
 use App\Models\PembayaranModel;
-use App\Models\PemesananModel;
+use App\Models\PemesananModel; // Pastikan ini di-import
 use App\Models\PengembalianModel;
 
 class Admin extends BaseController
@@ -195,5 +195,59 @@ class Admin extends BaseController
 
         $pelaksanaanModel->save($data);
         return redirect()->to('/admin/pelaksanaan')->with('success', 'Data pelaksanaan baru berhasil ditambahkan.');
+    }
+
+    // --- Tambahkan method kelolaPemesanan di sini ---
+    public function kelolaPemesanan()
+    {
+        $pemesananModel = new PemesananModel(); // Buat instance PemesananModel
+        $data['pemesanan_list'] = $pemesananModel->getPemesananWithDetails(); // Gunakan fungsi getPemesananWithDetails yang sudah diperbaiki
+
+        return view('admin/pemesanan', $data); // Sesuaikan dengan nama view yang ingin Anda tampilkan
+    }
+
+    // Anda juga perlu menambahkan method edit, update, dan hapus untuk pemesanan jika ada fitur tersebut
+    // Contoh:
+    // public function editPemesanan($id) { ... }
+    // public function updatePemesanan() { ... }
+    // public function hapusPemesanan($id) { ... }
+
+
+    // --- RUTE BARU UNTUK EDIT, UPDATE, & HAPUS PELAKSANAAN ---
+    public function editPelaksanaan($id)
+    {
+        $pelaksanaanModel = new PelaksanaanModel();
+        $userModel = new UserModel();
+        $data['pelaksanaan'] = $pelaksanaanModel->find($id);
+        $data['pelanggan_list'] = $userModel->where('role', 'customer')->findAll(); // Untuk dropdown pilihan pelanggan
+
+        if (empty($data['pelaksanaan'])) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException('Data pelaksanaan dengan ID ' . $id . ' tidak ditemukan');
+        }
+
+        return view('admin/edit_pelaksanaan', $data);
+    }
+
+    public function updatePelaksanaan()
+    {
+        $pelaksanaanModel = new PelaksanaanModel();
+        $id = $this->request->getPost('id_pelaksanaan');
+
+        $data = [
+            'id_pelanggan'         => $this->request->getPost('id_pelanggan'),
+            'tanggal_pelaksanaan'  => $this->request->getPost('tanggal_pelaksanaan'),
+            'alamat_pelaksanaan'   => $this->request->getPost('alamat_pelaksanaan'),
+            'waktu_pengerjaan'     => $this->request->getPost('waktu_pengerjaan'),
+        ];
+
+        $pelaksanaanModel->update($id, $data);
+        return redirect()->to('/admin/pelaksanaan')->with('success', 'Data pelaksanaan berhasil diperbarui.');
+    }
+
+    public function hapusDataPelaksanaan($id)
+    {
+        $pelaksanaanModel = new PelaksanaanModel();
+        $pelaksanaanModel->delete($id);
+        return redirect()->to('/admin/pelaksanaan')->with('success', 'Data pelaksanaan berhasil dihapus.');
     }
 }

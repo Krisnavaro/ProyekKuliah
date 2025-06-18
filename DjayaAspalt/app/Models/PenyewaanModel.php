@@ -14,13 +14,13 @@ class PenyewaanModel extends Model
     ];
 
     /**
-     * Mengambil semua data penyewaan dengan menggabungkan data alat dan pelanggan.
+     * Mengambil semua data penyewaan dengan menggabungkan data alat dan pelanggan (users).
      */
     public function getPenyewaanWithDetails()
     {
-        return $this->select('penyewaan.*, alat.nama_alat, pelanggan.nama_lengkap')
+        return $this->select('penyewaan.*, alat.nama_alat, users.nama_lengkap') // Ganti 'pelanggan.nama_lengkap' ke 'users.nama_lengkap'
                     ->join('alat', 'alat.id_alat = penyewaan.id_alat', 'left')
-                    ->join('pelanggan', 'pelanggan.id_pelanggan = penyewaan.id_namasewa', 'left')
+                    ->join('users', 'users.id = penyewaan.id_namasewa', 'left') // Ganti 'pelanggan' ke 'users'
                     ->findAll();
     }
 }

@@ -11,7 +11,7 @@
     .admin-sidebar {
       width: 200px;
       min-height: 100vh;
-      background-color: #ffffff;
+      background-color: #ffffff; /* Ini yang membuat sidebar putih */
       border-right: 1px solid #dee2e6;
       padding-top: 1rem;
       position: fixed;
@@ -64,7 +64,7 @@
         border-radius: 50%;
         object-fit: cover;
     }
-    .admin-main-content { padding: 30px; background-color: #ffcc80; min-height: calc(100vh - 60px); }
+    .admin-main-content { padding: 30px; background-color: #ffcc80; min-height: calc(100vh - 60px); } /* Ini yang membuat konten utama oranye */
 
     .admin-profile-dropdown {
         position: absolute;
@@ -124,7 +124,8 @@
       <a href="<?= base_url('admin') ?>">🏠 Home</a>
       <a href="<?= base_url('admin/pelanggan') ?>">👥 Manajemen Klien</a>
       <a href="<?= base_url('admin/pelaksanaan') ?>">📅 Pelaksanaan</a>
-      <a href="<?= base_url('admin/pemesanan') ?>">📦 Pemesanan</a>
+      {{-- BARIS INI HANYA SATU YANG AKTIF --}}
+      <a href="<?= base_url('admin/kelola-pemesanan') ?>">📦 Pemesanan</a>
       <a href="<?= base_url('admin/penyewaan') ?>">🏗️ Penyewaan</a>
       <a href="<?= base_url('admin/alat') ?>">🔧 Alat</a>
       <a href="<?= base_url('admin/pembayaran') ?>">💰 Pembayaran</a>

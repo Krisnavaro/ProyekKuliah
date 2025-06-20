@@ -5,7 +5,7 @@ namespace App\Filters;
 use CodeIgniter\Filters\FilterInterface;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
-use CodeIgniter\HTTP\RedirectResponse; // Pastikan ini di-include
+use CodeIgniter\HTTP\RedirectResponse;
 
 class AuthFilter implements FilterInterface
 {

@@ -216,7 +216,7 @@
                 // Jika sudah login, arahkan ke halaman profil
                 window.location.href = '<?= base_url('customer-profile') ?>';
             <?php else: ?>
-                // PERUBAHAN DI SINI: Langsung tampilkan modal login, bukan pilihan
+                // Tampilkan modal login
                 loginModal.show();
             <?php endif; ?>
         });
@@ -237,9 +237,28 @@
 
         // Menampilkan pesan error login dari server
         <?php if (session()->getFlashdata('error')): ?>
-            document.getElementById('loginErrorAlert').innerText = '<?= session()->getFlashdata('error') ?>';
-            document.getElementById('loginErrorAlert').style.display = 'block';
-            loginModal.show();
+            // Tampilkan pesan error di alert dalam modal login
+            const loginErrorAlert = document.getElementById('loginErrorAlert');
+            if (loginErrorAlert) { // Pastikan elemennya ada
+                loginErrorAlert.innerText = '<?= session()->getFlashdata('error') ?>';
+                loginErrorAlert.style.display = 'block';
+            }
+            // >>>>>> BARIS DI BAWAH INI YANG KITA NONAKTIFKAN OTOMATIS MEMUNCULKAN MODAL <<<<<<
+            // loginModal.show(); // HAPUS ATAU KOMENTARI BARIS INI
+        <?php endif; ?>
+
+        // Jika ada flashdata success_register (dari controller Register)
+        <?php if (session()->getFlashdata('success_register')): ?>
+            // Langsung tampilkan modal login setelah registrasi sukses
+            // loginModal.show(); // <--- KOMENTARI BARIS INI JUGA UNTUK MENCEGAH OTOMATIS MUNCUL
+            // Opsional: tampilkan pesan sukses di modal login
+            const loginErrorAlert = document.getElementById('loginErrorAlert');
+            if (loginErrorAlert) {
+              loginErrorAlert.classList.remove('alert-danger');
+              loginErrorAlert.classList.add('alert-success');
+              loginErrorAlert.innerText = 'Registrasi berhasil! Silakan login.';
+              loginErrorAlert.style.display = 'block';
+            }
         <?php endif; ?>
     });
   </script>

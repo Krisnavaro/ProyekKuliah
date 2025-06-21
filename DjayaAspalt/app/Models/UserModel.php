@@ -6,21 +6,26 @@ use CodeIgniter\Model;
 
 class UserModel extends Model
 {
-    protected $table            = 'users'; // Nama tabel pengguna di database Anda
-    protected $primaryKey       = 'id';    // Nama primary key di tabel users
+    protected $table            = 'users';
+    protected $primaryKey       = 'id';
 
     protected $useAutoIncrement = true;
 
-    // Definisikan field mana saja yang boleh diisi atau diubah oleh model ini
+    // Definisikan field mana saja yang boleh diisi atau diubah
+    // =============================================================
+    // TAMBAHKAN 'no_telpon' dan 'alamat_rumah' DI SINI
+    // =============================================================
     protected $allowedFields    = [
         'nama_lengkap',
         'username',
         'email',
         'password',
         'role',
-        'foto_profil'
+        'foto_profil',
+        'no_telpon',      // <-- Tambahkan ini
+        'alamat_rumah'    // <-- Tambahkan ini
     ];
 
-    // Kita nonaktifkan fitur timestamp otomatis karena kolomnya tidak ada di database Anda
+    // Kita nonaktifkan fitur timestamp otomatis
     protected $useTimestamps = false;
 }

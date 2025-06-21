@@ -17,14 +17,17 @@ class Admin extends BaseController
 
     public function dataPemesanan()
     {
-        $pemesananModel = new PemesananModel();
+        $pemesananModel = new \App\Models\PemesananModel();
         $allPemesanan = $pemesananModel
-            ->select('pemesanan.*, pelaksanaan.alamat_pelaksanaan')
+            ->select('pemesanan.*, pelaksanaan.alamat_pelaksanaan, pelanggan.nama_lengkap')
             ->join('pelaksanaan', 'pelaksanaan.id_pelaksanaan = pemesanan.id_pelaksanaan', 'left')
+            ->join('pelanggan', 'pelanggan.id_pelanggan = pelaksanaan.id_pelanggan', 'left')
+            ->orderBy('pemesanan.tanggal_pemesanan', 'DESC')
             ->findAll();
 
         $groupedData = [];
         foreach ($allPemesanan as $item) {
+            // Mengelompokkan data berdasarkan Bulan dan Tahun
             $monthYear = date('Y-m', strtotime($item['tanggal_pemesanan']));
             if (!isset($groupedData[$monthYear])) {
                 $groupedData[$monthYear] = [];
@@ -32,7 +35,6 @@ class Admin extends BaseController
             $groupedData[$monthYear][] = $item;
         }
 
-        krsort($groupedData);
         $data['pemesanan_per_bulan'] = $groupedData;
 
         return view('admin/pemesanan', $data);
@@ -284,7 +286,19 @@ class Admin extends BaseController
     public function adminProfile()
     {
         $userModel = new UserModel();
-        $userData = $userModel->find(session()->get('user_id'));
+        $userId = session()->get('user_id');
+
+        if (!$userId) {
+            return redirect()->to('/login')->with('error', 'Anda harus login terlebih dahulu.');
+        }
+
+        $userData = $userModel->find($userId);
+
+        if ($userData === null) {
+            session()->destroy();
+            return redirect()->to('/login')->with('error', 'Sesi tidak valid. Silakan login kembali.');
+        }
+
         return view('admin/admin_profile', $userData);
     }
 

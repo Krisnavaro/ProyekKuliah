@@ -3,27 +3,27 @@
 <?= $this->section('content') ?>
 
 <style>
-    .card.card-pelanggan {
+    .card-pelanggan {
         border: 2px solid #ff9933;
         border-radius: 15px;
         background-color: #fffaf0;
     }
-    .card.card-pelanggan .card-header {
+    .card-pelanggan .card-header {
         background-color: #ff9933;
         color: black;
         font-weight: bold;
         border-bottom: 2px solid #ff8c1a;
     }
-    .card.card-pelanggan .table {
+    .card-pelanggan .table {
         background-color: white;
     }
-    .card.card-pelanggan .table th {
+    .card-pelanggan .table th {
         background-color: #333;
         color: white;
         text-align: center;
         font-size: 0.9em;
     }
-    .card.card-pelanggan .table td {
+    .card-pelanggan .table td {
         text-align: center;
         vertical-align: middle;
         font-size: 0.85em;
@@ -41,19 +41,6 @@
         color: #dc3545;
         font-weight: bold;
     }
-    .scroll-indicator {
-        display: block;
-        margin: -10px auto 0 auto;
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background-color: black;
-        color: white;
-        text-align: center;
-        line-height: 40px;
-        font-size: 1.5rem;
-        cursor: pointer;
-    }
 </style>
 
 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -63,75 +50,62 @@
     </a>
 </div>
 
-
-<div class="card card-pelanggan mb-4">
-    <div class="card-header">
-        Data Pelanggan bulan Desember
+<?php if (session()->getFlashdata('success')): ?>
+    <div class="alert alert-success" role="alert">
+        <?= session()->getFlashdata('success') ?>
     </div>
-    <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Id Pelanggan</th>
-                        <th>Id Survey</th>
-                        <th>Id Nama Sewa</th>
-                        <th>Nama Lengkap</th>
-                        <th>Tanggal Survey</th>
-                        <th>Lokasi Survey/Lokasi Pengiriman</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>PLG12122024001</td>
-                        <td>Survey12122024001</td>
-                        <td>-</td>
-                        <td>Samuel Orief Rosario</td>
-                        <td>12-12-2024</td>
-                        <td>Jl. Bhakti No.48 3, Cilandak, Jakarta Selatan</td>
-                    </tr>
-                    <tr>
-                        <td>PLG12122024002</td>
-                        <td>-</td>
-                        <td>Sewa12122024001</td>
-                        <td>Samuel Orief Rosario</td>
-                        <td>-</td>
-                        <td>Jl. Bhakti No.48 3, Cilandak, Jakarta Selatan</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <span class="scroll-indicator">▼</span>
-    </div>
-</div>
+<?php endif; ?>
 
-
-<div class="card card-pelanggan mb-4">
-    <div class="card-header">
-        Data Pelanggan bulan November
-    </div>
-    <div class="card-body">
-        <div class="empty-data-container">
+<?php if (empty($pelanggan_per_bulan)): ?>
+    <div class="card card-pelanggan">
+         <div class="card-body empty-data-container">
             <img src="<?= base_url('assets/table_cat_animated.gif') ?>" alt="Tidak Ada Data">
-            <p>Tidak Ada Pemesanan/Penyewaan</p>
+            <p>Belum ada data pelanggan.</p>
         </div>
-        <span class="scroll-indicator">▼</span>
     </div>
-</div>
-
-
-<div class="card card-pelanggan mb-4">
-    <div class="card-header">
-        Data Pelanggan bulan Oktober
-    </div>
-    <div class="card-body">
-        <div class="empty-data-container">
-             <img src="<?= base_url('assets/table_cat_animated.gif') ?>" alt="Tidak Ada Data">
-            <p>Tidak Ada Pemesanan/Penyewaan</p>
+<?php else: ?>
+    <?php foreach ($pelanggan_per_bulan as $bulan => $daftar_pelanggan): ?>
+        <div class="card card-pelanggan mb-4">
+            <div class="card-header">
+                Data Pelanggan bulan <?= date('F Y', strtotime($bulan)) ?>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>ID Pelanggan</th>
+                                <th>Id Survey</th>
+                                <th>Id Nama Sewa</th>
+                                <th>Nama Lengkap</th>
+                                <th>No. Telepon</th>
+                                <th>Tanggal Survey</th>
+                                <th>Lokasi Survey</th>
+                                <th class="text-center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($daftar_pelanggan as $pelanggan): ?>
+                                <tr>
+                                    <td><?= esc($pelanggan['id_pelanggan']) ?></td>
+                                    <td><?= esc($pelanggan['id_survey']) ?></td>
+                                    <td><?= esc($pelanggan['id_namasewa']) ?></td>
+                                    <td><?= esc($pelanggan['nama_lengkap']) ?></td>
+                                    <td><?= esc($pelanggan['no_telpon']) ?></td>
+                                    <td><?= esc(date('d-m-Y', strtotime($pelanggan['tanggal_survey']))) ?></td>
+                                    <td><?= esc($pelanggan['lokasi_survey']) ?></td>
+                                    <td class="text-center">
+                                        <a href="<?= base_url('admin/pelanggan/edit/' . $pelanggan['id_pelanggan']) ?>" class="btn btn-sm btn-warning">Edit</a>
+                                        <a href="<?= base_url('admin/pelanggan/hapus/' . $pelanggan['id_pelanggan']) ?>" class="btn btn-sm btn-danger" onclick="return confirm('Anda yakin?')">Hapus</a>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-        <span class="scroll-indicator">▼</span>
-    </div>
-</div>
-
+    <?php endforeach; ?>
+<?php endif; ?>
 
 <?= $this->endSection() ?>

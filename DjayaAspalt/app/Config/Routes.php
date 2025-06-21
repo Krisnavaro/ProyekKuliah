@@ -29,7 +29,7 @@ $routes->group('admin', ['filter' => 'auth:admin'], function($routes) {
     $routes->post('pelanggan/update/(:any)', 'Admin::prosesUpdatePelanggan/$1');
     $routes->get('pelanggan/hapus/(:any)', 'Admin::hapusPelanggan/$1');
 
-    // Rute Pelaksanaan (TAMBAHAN BARU)
+    // Rute Pelaksanaan
     $routes->get('pelaksanaan', 'Admin::dataPelaksanaan');
     $routes->get('pelaksanaan/tambah', 'Admin::tambahPelaksanaan');
     $routes->post('pelaksanaan/simpan', 'Admin::simpanPelaksanaan');
@@ -37,8 +37,15 @@ $routes->group('admin', ['filter' => 'auth:admin'], function($routes) {
     $routes->post('pelaksanaan/update/(:num)', 'Admin::updatePelaksanaan/$1');
     $routes->get('pelaksanaan/hapus/(:num)', 'Admin::hapusPelaksanaan/$1');
     
-    // Rute menu lainnya
+    // Rute Pemesanan
     $routes->get('pemesanan', 'Admin::dataPemesanan');
+    $routes->get('pemesanan/tambah', 'Admin::tambahPemesanan');
+    $routes->post('pemesanan/simpan', 'Admin::simpanPemesanan');
+    $routes->get('pemesanan/edit/(:any)', 'Admin::editPemesanan/$1');
+    $routes->post('pemesanan/update/(:any)', 'Admin::updatePemesanan/$1');
+    $routes->get('pemesanan/hapus/(:any)', 'Admin::hapusPemesanan/$1');
+
+    // Rute menu lainnya
     $routes->get('penyewaan', 'Admin::dataPenyewaan');
     
     // Rute profil admin

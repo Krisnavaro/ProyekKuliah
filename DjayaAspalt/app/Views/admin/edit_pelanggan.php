@@ -11,10 +11,10 @@
     </div>
 
     <div class="card p-4 shadow-sm">
-        <form action="<?= base_url('admin/pelanggan/update') ?>" method="post">
+        
+        <form action="<?= base_url('admin/pelanggan/update/' . $pelanggan['id_pelanggan']) ?>" method="post">
             <?= csrf_field() ?>
-            <input type="hidden" name="id_pelanggan" value="<?= esc($pelanggan['id_pelanggan']) ?>">
-
+            
             <div class="mb-3">
                 <label for="nama_lengkap" class="form-label">Nama Lengkap</label>
                 <input type="text" class="form-control" id="nama_lengkap" name="nama_lengkap" value="<?= esc($pelanggan['nama_lengkap']) ?>">

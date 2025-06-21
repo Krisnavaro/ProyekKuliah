@@ -18,8 +18,90 @@ class Admin extends BaseController
     public function dataPemesanan()
     {
         $pemesananModel = new PemesananModel();
-        $data['pemesanan'] = $pemesananModel->getPemesananWithDetails();
+        $allPemesanan = $pemesananModel
+            ->select('pemesanan.*, pelaksanaan.alamat_pelaksanaan')
+            ->join('pelaksanaan', 'pelaksanaan.id_pelaksanaan = pemesanan.id_pelaksanaan', 'left')
+            ->findAll();
+
+        $groupedData = [];
+        foreach ($allPemesanan as $item) {
+            $monthYear = date('Y-m', strtotime($item['tanggal_pemesanan']));
+            if (!isset($groupedData[$monthYear])) {
+                $groupedData[$monthYear] = [];
+            }
+            $groupedData[$monthYear][] = $item;
+        }
+
+        krsort($groupedData);
+        $data['pemesanan_per_bulan'] = $groupedData;
+
         return view('admin/pemesanan', $data);
+    }
+    
+    public function tambahPemesanan()
+    {
+        $pelaksanaanModel = new PelaksanaanModel();
+        $data['pelaksanaan_list'] = $pelaksanaanModel
+            ->select('pelaksanaan.id_pelaksanaan, pelanggan.nama_lengkap, pelaksanaan.alamat_pelaksanaan')
+            ->join('pelanggan', 'pelanggan.id_pelanggan = pelaksanaan.id_pelanggan', 'left')
+            ->findAll();
+            
+        return view('admin/tambah_pemesanan', $data);
+    }
+
+    public function simpanPemesanan()
+    {
+        $pemesananModel = new PemesananModel();
+        
+        $id_pesanan = 'Pesan' . date('dmy') . random_int(100, 999);
+
+        $data = [
+            'id_pesanan' => $id_pesanan,
+            'id_pelaksanaan' => $this->request->getPost('id_pelaksanaan'),
+            'nama_paketdipesan' => $this->request->getPost('nama_paketdipesan'),
+            'harga_paketdipesan' => $this->request->getPost('harga_paketdipesan'),
+            'tanggal_pemesanan' => $this->request->getPost('tanggal_pemesanan'),
+        ];
+        $pemesananModel->save($data);
+        return redirect()->to('/admin/pemesanan')->with('success', 'Data pemesanan berhasil ditambahkan.');
+    }
+
+    public function editPemesanan($id)
+    {
+        $pemesananModel = new PemesananModel();
+        $pelaksanaanModel = new PelaksanaanModel();
+
+        $data['pemesanan'] = $pemesananModel->find($id);
+        $data['pelaksanaan_list'] = $pelaksanaanModel
+            ->select('pelaksanaan.id_pelaksanaan, pelanggan.nama_lengkap, pelaksanaan.alamat_pelaksanaan')
+            ->join('pelanggan', 'pelanggan.id_pelanggan = pelaksanaan.id_pelanggan', 'left')
+            ->findAll();
+
+        if (empty($data['pemesanan'])) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException('Data pemesanan tidak ditemukan');
+        }
+
+        return view('admin/edit_pemesanan', $data);
+    }
+
+    public function updatePemesanan($id)
+    {
+        $pemesananModel = new PemesananModel();
+        $data = [
+            'id_pelaksanaan' => $this->request->getPost('id_pelaksanaan'),
+            'nama_paketdipesan' => $this->request->getPost('nama_paketdipesan'),
+            'harga_paketdipesan' => $this->request->getPost('harga_paketdipesan'),
+            'tanggal_pemesanan' => $this->request->getPost('tanggal_pemesanan'),
+        ];
+        $pemesananModel->update($id, $data);
+        return redirect()->to('/admin/pemesanan')->with('success', 'Data pemesanan berhasil diperbarui.');
+    }
+
+    public function hapusPemesanan($id)
+    {
+        $pemesananModel = new PemesananModel();
+        $pemesananModel->delete($id);
+        return redirect()->to('/admin/pemesanan')->with('success', 'Data pemesanan berhasil dihapus.');
     }
 
     public function dataPenyewaan()
@@ -28,11 +110,14 @@ class Admin extends BaseController
         $data['penyewaan'] = $penyewaanModel->getPenyewaanWithDetails();
         return view('admin/penyewaan', $data);
     }
-
+    
     public function dataPelaksanaan()
     {
         $pelaksanaanModel = new PelaksanaanModel();
-        $allPelaksanaan = $pelaksanaanModel->getPelaksanaanWithPelanggan();
+        $allPelaksanaan = $pelaksanaanModel
+            ->select('pelaksanaan.*, pelanggan.nama_lengkap')
+            ->join('pelanggan', 'pelanggan.id_pelanggan = pelaksanaan.id_pelanggan', 'left')
+            ->findAll();
     
         $groupedData = [];
         foreach ($allPelaksanaan as $item) {
@@ -44,17 +129,15 @@ class Admin extends BaseController
         }
     
         krsort($groupedData);
-    
         $data['pelaksanaan_per_bulan'] = $groupedData;
     
         return view('admin/pelaksanaan', $data);
     }
 
-    // --- METHOD BARU UNTUK PELAKSANAAN ---
     public function tambahPelaksanaan()
     {
-        $userModel = new UserModel();
-        $data['pelanggan_list'] = $userModel->where('role', 'customer')->findAll();
+        $pelangganModel = new PelangganModel();
+        $data['pelanggan_list'] = $pelangganModel->findAll();
         return view('admin/tambah_pelaksanaan', $data);
     }
 
@@ -74,9 +157,9 @@ class Admin extends BaseController
     public function editPelaksanaan($id)
     {
         $pelaksanaanModel = new PelaksanaanModel();
-        $userModel = new UserModel();
+        $pelangganModel = new PelangganModel();
         $data['pelaksanaan'] = $pelaksanaanModel->find($id);
-        $data['pelanggan_list'] = $userModel->where('role', 'customer')->findAll();
+        $data['pelanggan_list'] = $pelangganModel->findAll();
         
         if (empty($data['pelaksanaan'])) {
             throw new \CodeIgniter\Exceptions\PageNotFoundException('Data pelaksanaan tidak ditemukan');
@@ -104,11 +187,24 @@ class Admin extends BaseController
         $pelaksanaanModel->delete($id);
         return redirect()->to('/admin/pelaksanaan')->with('success', 'Data pelaksanaan berhasil dihapus.');
     }
-    // ------------------------------------
-
+    
     public function manajemenPengguna(): string
     {
-        return view('admin/manajemen_pengguna');
+        $pelangganModel = new PelangganModel();
+        $allPelanggan = $pelangganModel->orderBy('tanggal_survey', 'DESC')->findAll();
+
+        $groupedData = [];
+        foreach ($allPelanggan as $item) {
+            $monthYear = date('Y-m', strtotime($item['tanggal_survey']));
+            if (!isset($groupedData[$monthYear])) {
+                $groupedData[$monthYear] = [];
+            }
+            $groupedData[$monthYear][] = $item;
+        }
+        
+        $data['pelanggan_per_bulan'] = $groupedData;
+
+        return view('admin/manajemen_pengguna', $data);
     }
 
     public function tambahPelanggan()
@@ -119,17 +215,40 @@ class Admin extends BaseController
     public function simpanPelanggan()
     {
         $pelangganModel = new PelangganModel();
-        $id_pelanggan = 'PLG' . date('ymd') . random_int(100, 999);
+        
+        $datePrefix = 'S' . date('dmy');
+        $todayCountPelanggan = $pelangganModel->like('id_pelanggan', $datePrefix, 'after')->countAllResults();
+        $nextSequencePelanggan = str_pad($todayCountPelanggan + 1, 3, '0', STR_PAD_LEFT);
+        $id_pelanggan = $datePrefix . $nextSequencePelanggan;
+
+        $jenis_transaksi = $this->request->getPost('jenis_transaksi');
+        $id_survey = '-';
+        $id_namasewa = '-';
+
+        if ($jenis_transaksi === 'survey') {
+            $surveyDatePrefix = 'Survey' . date('dmy');
+            $todayCountSurvey = $pelangganModel->like('id_survey', $surveyDatePrefix, 'after')->countAllResults();
+            $nextSequenceSurvey = str_pad($todayCountSurvey + 1, 3, '0', STR_PAD_LEFT);
+            $id_survey = $surveyDatePrefix . $nextSequenceSurvey;
+        } elseif ($jenis_transaksi === 'sewa') {
+            $sewaDatePrefix = 'Sewa' . date('dmy');
+            $todayCountSewa = $pelangganModel->like('id_namasewa', $sewaDatePrefix, 'after')->countAllResults();
+            $nextSequenceSewa = str_pad($todayCountSewa + 1, 3, '0', STR_PAD_LEFT);
+            $id_namasewa = $sewaDatePrefix . $nextSequenceSewa;
+        }
+        
         $data = [
             'id_pelanggan'   => $id_pelanggan,
-            'id_survey'      => $this->request->getPost('id_survey'),
-            'id_namasewa'    => $this->request->getPost('id_namasewa'),
+            'id_survey'      => $id_survey,
+            'id_namasewa'    => $id_namasewa,
             'nama_lengkap'   => $this->request->getPost('nama_lengkap'),
             'no_telpon'      => $this->request->getPost('no_telpon'),
             'tanggal_survey' => $this->request->getPost('tanggal_survey'),
             'lokasi_survey'  => $this->request->getPost('lokasi_survey'),
         ];
+
         $pelangganModel->save($data);
+
         return redirect()->to('/admin/pelanggan')->with('success', 'Data pelanggan aktif berhasil ditambahkan.');
     }
 

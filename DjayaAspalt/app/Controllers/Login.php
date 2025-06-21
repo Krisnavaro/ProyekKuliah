@@ -2,31 +2,43 @@
 
 namespace App\Controllers;
 
+use App\Controllers\BaseController;
+use App\Models\UserModel;
+
 class Login extends BaseController
 {
     public function __construct()
     {
-        helper(['form']);
+        helper('url');
     }
 
     public function showLoginForm()
     {
+        if (session()->get('logged_in')) {
+            if (session()->get('role') === 'admin') {
+                return redirect()->to('admin');
+            }
+            return redirect()->to('dashboard');
+        }
         return view('auth/login');
     }
 
+    /**
+     * FUNGSI LOGIN SEMENTARA (TANPA HASH) UNTUK DEBUGGING
+     */
     public function login()
     {
         $email = $this->request->getPost('username');
         $password = $this->request->getPost('password');
 
-        $userModel = new \App\Models\UserModel();
-
+        $userModel = new UserModel();
         $user = $userModel->where('email', $email)->first();
 
-        if ($user && password_verify($password, $user['password'])) {
+        // PENGECEKAN PASSWORD DIUBAH MENJADI TEKS BIASA (BUKAN HASH)
+        if ($user && $password === $user['password']) {
+
             session()->set([
                 'user_id'      => $user['id'],
-                'username'     => $user['username'],
                 'email'        => $user['email'],
                 'nama_lengkap' => $user['nama_lengkap'],
                 'role'         => $user['role'],

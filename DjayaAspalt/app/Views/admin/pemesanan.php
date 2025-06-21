@@ -112,8 +112,6 @@
 </div>
 
 <style>
-    /* Styling tambahan khusus untuk view ini jika diperlukan,
-       tapi sebagian besar sudah di layout/admin_main.php */
     .data-section {
         background-color: white;
         border-radius: 10px;

@@ -1,225 +1,207 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Djaya Aspalt Admin Dashboard</title>
-    <link rel="icon" href="<?= base_url('assets/favicon.ico') ?>" type="image/x-icon">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!-- Menggunakan Bootstrap untuk styling dasar -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- LANGKAH 1: Tambahkan link ke Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Style kustom untuk dashboard baru -->
     <style>
+        /* LANGKAH 2: Terapkan font baru ke seluruh halaman */
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-family: 'Poppins', sans-serif; /* <-- FONT DIUBAH DI SINI */
+            background-color: #F0F2F5;
+        }
+
+        .admin-wrapper {
             display: flex;
-            background-color: #f8f9fc;
-            min-height: 100vh;
         }
 
         .admin-sidebar {
             width: 250px;
-            background-color: #ffffff; /* Ini yang membuat sidebar putih */
-            color: #333; /* Warna teks untuk sidebar putih */
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            min-height: 100vh;
+            background-color: #ffffff;
+            padding-top: 1.5rem;
             position: fixed;
             height: 100%;
             overflow-y: auto;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-            border-right: 1px solid #dee2e6; /* Garis pemisah */
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #e0e0e0;
         }
 
-        .admin-sidebar a {
-            color: #333; /* Warna teks untuk link di sidebar putih */
-            text-decoration: none;
-            padding: 10px 15px;
-            margin: 5px 0;
-            width: 100%;
-            border-radius: 5px;
-            transition: background-color 0.3s, color 0.3s;
+        .sidebar-header {
+            padding: 0 1.5rem;
+            margin-bottom: 2rem;
             display: flex;
             align-items: center;
         }
-
-        .admin-sidebar a:hover {
-            background-color: #f1f1f1; /* Warna hover untuk sidebar putih */
-            color: #000;
-        }
-
-        .admin-sidebar a img {
+        .sidebar-header img {
+            width: 40px;
+            height: 40px;
             margin-right: 10px;
         }
-
-        .admin-content {
-            margin-left: 250px;
-            flex-grow: 1;
-            padding: 20px;
-            width: calc(100% - 250px);
-            background-color: #ffcc80; /* Konten utama oranye */
-            min-height: 100vh;
+        .sidebar-header h5 {
+            margin: 0;
+            font-weight: 600; /* Dibuat lebih tebal */
         }
 
-        .admin-navbar {
-            background-color: white;
-            padding: 15px 20px;
-            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        .sidebar-menu {
+            flex-grow: 1;
+        }
+        .sidebar-menu a {
+            display: block;
+            padding: 12px 1.5rem;
+            color: #555; /* Warna teks menu sedikit lebih gelap */
+            text-decoration: none;
+            font-weight: 500;
+            border-left: 3px solid transparent;
+            transition: all 0.2s ease;
+        }
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background-color: #eef2ff; /* Warna hover/aktif yang lebih soft */
+            color: #4361ee; /* Warna teks saat aktif/hover */
+            border-left: 3px solid #4361ee;
+        }
+
+        .sidebar-footer {
+            padding: 1.5rem;
+            text-align: center;
+        }
+        .sidebar-footer img {
+            width: 150px;
+        }
+
+        .admin-main-content-wrapper {
+            margin-left: 250px;
+            width: calc(100% - 250px);
+        }
+
+        .admin-topbar {
+            background-color: #ffffff;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid #e0e0e0;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-radius: 0.35rem;
-            margin-bottom: 20px;
+            height: 70px;
         }
 
-        .admin-navbar .search-bar {
-            flex-grow: 1;
-            margin: 0 20px;
-            max-width: 500px;
+        .search-container {
+            position: relative;
+            width: 50%;
         }
-
-        .admin-navbar .search-bar input {
+        .search-container input {
             width: 100%;
-            padding: 8px 15px;
-            border: 1px solid #d1d3e2;
+            padding: 8px 15px 8px 40px;
             border-radius: 20px;
+            border: 1px solid #ccc;
+            background-color: #f5f5f5;
+        }
+        .search-container .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #888;
         }
 
-        .admin-navbar .user-profile {
+        .topbar-icons {
             display: flex;
             align-items: center;
+            gap: 1.5rem;
         }
-
-        .admin-navbar .user-profile img {
+        .topbar-icons img {
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            margin-left: 10px;
+            object-fit: cover;
+            cursor: pointer;
+        }
+        .topbar-icons .icon-btn {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: #555;
         }
 
-        .admin-navbar .user-profile span {
-            margin-right: 10px;
-            color: #5a5c69;
-        }
-
-        .admin-table {
-            background-color: white;
-            border-radius: 0.35rem;
-            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
-            padding: 20px;
-        }
-
-        .admin-table table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
-
-        .admin-table th,
-        .admin-table td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-
-        .admin-table th {
-            background-color: #f2f2f2;
-        }
-
-        .btn-table {
-            padding: 5px 10px;
-            font-size: 0.85rem;
-            border-radius: 0.25rem;
-            text-decoration: none;
-            color: white;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .btn-table.btn-success {
-            background-color: #1cc88a;
-            border-color: #1cc88a;
-        }
-
-        .btn-table.btn-success:hover {
-            background-color: #17a673;
-            border-color: #17a673;
-        }
-
-        .btn-table.btn-warning {
-            background-color: #f6c23e;
-            border-color: #f6c23e;
-        }
-
-        .btn-table.btn-warning:hover {
-            background-color: #f4b619;
-            border-color: #f4b619;
-        }
-
-        .btn-table.btn-danger {
-            background-color: #e74a3b;
-            border-color: #e74a3b;
-        }
-
-        .btn-table.btn-danger:hover {
-            background-color: #da3c2b;
-            border-color: #da3c2b;
-        }
-
-        .btn-table.btn-info {
-            background-color: #36b9cc;
-            border-color: #36b9cc;
-        }
-
-        .btn-table.btn-info:hover {
-            background-color: #2c9faf;
-            border-color: #2c9faf;
+        .admin-main-content {
+            padding: 2rem;
+            background-color: #FFDAB9;
+            min-height: calc(100vh - 70px);
         }
     </style>
 </head>
-
 <body>
-    <div class="admin-sidebar">
-        <div class="text-center mb-4">
-            <img src="<?= base_url('assets/logoSamping1.png') ?>" width="140" alt="Logo">
+    <div class="admin-wrapper">
+        <div class="admin-sidebar">
+            <div class="sidebar-header">
+                <img src="<?= base_url('assets/logo_djaya_aspalt.png') ?>" alt="Logo">
+                <h5>DJAYA ASPALT</h5>
+            </div>
+            <div class="sidebar-menu">
+                <a href="<?= base_url('admin') ?>">Home</a>
+                <a href="<?= base_url('admin/pelanggan') ?>">Pelanggan</a>
+                <a href="<?= base_url('admin/pelaksanaan') ?>">Pelaksanaan</a>
+                <a href="<?= base_url('admin/pemesanan') ?>">Pemesanan</a>
+                <a href="<?= base_url('admin/penyewaan') ?>">Penyewaan</a>
+                <a href="<?= base_url('admin/alat') ?>">Alat</a>
+                <a href="<?= base_url('admin/pembayaran') ?>">Pembayaran</a>
+                <a href="<?= base_url('admin/pengembalian') ?>">Pengembalian</a>
+            </div>
+            <div class="sidebar-footer">
+                <img src="<?= base_url('assets/admin_worker_illustration.png') ?>" alt="Admin Worker">
+            </div>
         </div>
-        <a href="<?= base_url('admin') ?>">🏠 Home</a>
-        <a href="<?= base_url('admin/pelanggan') ?>">👥 Manajemen Klien</a>
-        <a href="<?= base_url('admin/pelaksanaan') ?>">📅 Pelaksanaan</a>
 
-        <a href="<?= base_url('admin/pemesanan') ?>">📦 Pemesanan</a> 
-        <a href="<?= base_url('admin/penyewaan') ?>">🏗️ Penyewaan</a>
-        <a href="<?= base_url('admin/alat') ?>">🔧 Alat</a>
-        <a href="<?= base_url('admin/pembayaran') ?>">💰 Pembayaran</a>
-        <a href="<?= base_url('admin/pengembalian') ?>">🔙 Pengembalian</a>
-        
-        <hr class="w-100 my-3" style="border-top: 1px solid rgba(0,0,0,0.1);">
+        <div class="admin-main-content-wrapper">
+            <div class="admin-topbar">
+                <div class="search-container">
+                    <span class="search-icon">🔍</span>
+                    <input class="form-control" type="search" placeholder="Cari...">
+                </div>
+                <div class="topbar-icons">
+                    <button class="icon-btn">🔄</button>
+                    <img src="<?= session()->get('foto_profil') ? base_url('uploads/avatars/' . session()->get('foto_profil')) : base_url('assets/default_avatar.png') ?>" alt="Foto Profil Admin" id="adminProfileIcon">
+                </div>
+            </div>
 
-        <a href="<?= base_url('admin/manajemen-pelanggan-survey') ?>">📊 Data Pelanggan (Survey)</a>
-        
-        <div class="text-center mt-5">
-            <img src="<?= base_url('assets/admin_worker_laptop.png') ?>" width="120" alt="Admin Worker">
+            <div id="adminProfileDropdown" style="display: none; position: absolute; top: 65px; right: 20px; background: white; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 100; padding: 10px; min-width: 200px;">
+                 <a href="<?= base_url('admin/profile') ?>" style="display:block; padding: 10px; text-decoration:none; color: #333;">Informasi Akun</a>
+                 <a href="<?= base_url('logout') ?>" style="display:block; padding: 10px; text-decoration:none; color: red;">Keluar Akun</a>
+            </div>
+
+            <div class="admin-main-content">
+                <?= $this->renderSection('content') ?>
+            </div>
         </div>
     </div>
 
-    <div class="admin-content">
-        <nav class="admin-navbar">
-            <div class="search-bar">
-                <input type="text" placeholder="Cari nama...">
-            </div>
-            <div class="user-profile">
-                <span>Halo, <?= esc(session()->get('nama_lengkap') ?? 'Admin') ?></span>
-                <?php $foto_profil = session()->get('foto_profil'); ?>
-                <img src="<?= base_url('uploads/avatars/' . ($foto_profil ? $foto_profil : 'default.jpg')) ?>" alt="User Avatar">
-                <a href="<?= base_url('logout') ?>" class="btn btn-danger btn-sm ms-3">Logout</a>
-            </div>
-        </nav>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var adminProfileIcon = document.getElementById('adminProfileIcon');
+            var adminProfileDropdown = document.getElementById('adminProfileDropdown');
 
-        <?= $this->renderSection('content') ?>
-    </div>
+            if (adminProfileIcon) {
+                adminProfileIcon.addEventListener('click', function(event) {
+                    event.stopPropagation();
+                    adminProfileDropdown.style.display = adminProfileDropdown.style.display === 'none' ? 'block' : 'none';
+                });
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+                document.addEventListener('click', function(event) {
+                    if (!adminProfileIcon.contains(event.target) && !adminProfileDropdown.contains(event.target)) {
+                        adminProfileDropdown.style.display = 'none';
+                    }
+                });
+            }
+        });
+    </script>
 </body>
-
 </html>

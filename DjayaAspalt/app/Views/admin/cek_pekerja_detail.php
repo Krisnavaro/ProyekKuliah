@@ -1,40 +1,38 @@
-<?= $this->extend('layout/admin_main') ?>
+<?= $this->extend('layout/admin_cek_main') ?>
+
 <?= $this->section('content') ?>
-<div class="container py-4">
-    <div class="d-flex align-items-center mb-4">
-        <a href="javascript:history.back()" class="me-3">
-            <img src="<?= base_url('assets/Back-01.png') ?>" width="43" alt="Back">
-        </a>
-        <h2 class="mb-0">Cek Pekerja</h2>
-    </div>
-
-    <div class="row">
-        <div class="col-md-3 text-center">
-            <div class="admin-card h-100">
-                <img src="<?= base_url('assets/pekerja_sedang_bekerja.png') ?>" alt="Pekerja Sedang Bekerja" style="max-width: 150px;">
-                <h5 class="fw-bold">Pekerja <span class="text-success">Sedang Bekerja</span></h5>
-                <p>Pekerja: <?= $pekerja_sedang_bekerja_jumlah ?> Orang</p>
-            </div>
-        </div>
-        <div class="col-md-9">
-            <div class="admin-card p-4 h-100">
-                <h4 class="fw-bold">Paket A</h4>
-                <p class="mb-1"><strong>Id Pesanan:</strong> <span class="text-danger"><?= $pekerja_detail['id_pesanan'] ?></span></p>
-                <p class="mb-1"><strong>Id Pelanggan:</strong> <span class="text-danger"><?= $pekerja_detail['id_pelanggan'] ?></span></p>
-                <p class="mb-1"><strong>Nama:</strong> <?= $pekerja_detail['nama'] ?></p>
-                <p class="mb-1"><strong>Waktu:</strong> <?= $pekerja_detail['waktu'] ?></p>
-                <p class="mb-1"><strong>Tanggal:</strong> <?= $pekerja_detail['tanggal'] ?></p>
-                <p class="mb-3"><strong>Lokasi:</strong> <?= $pekerja_detail['lokasi'] ?></p>
-
-                <p class="text-danger fw-bold fst-italic">*<?= $pekerja_detail['status_pengerjaan'] ?></p>
-
-                <div class="mt-4">
-                    <button class="btn btn-dark btn-sm me-2"><img src="<?= base_url('assets/phone_call_icon.png') ?>" width="18" alt="Telpon"> Telpon Pekerja</button>
-                    <button class="btn btn-success btn-sm me-2">Tambahkan</button>
-                    <button class="btn btn-warning btn-sm">Edit</button>
-                </div>
-            </div>
+<style>
+    .detail-pekerja-card { display: flex; align-items: center; background-color: white; padding: 2rem; border-radius: 15px; }
+    .pekerja-avatar { margin-right: 2rem; }
+    .pekerja-info { text-align: left; }
+    .pekerja-info h5 { font-weight: bold; }
+    .pekerja-info table { width: 100%; }
+    .pekerja-info table td { padding: 5px 0; }
+    .pekerja-info table td:first-child { font-weight: 600; width: 100px; }
+</style>
+<?php if($status === 'bekerja'): ?>
+    <div class="detail-pekerja-card">
+        <div class="pekerja-avatar text-center"><img src="<?= base_url('assets/pekerja_sedang_bekerja.png') ?>" alt="Pekerja" style="max-width: 150px;" class="mb-2"><h6>Pekerja Sedang Bekerja</h6><p>Pekerja: 10 Orang</p></div>
+        <div class="pekerja-info"><h5>Paket A</h5>
+            <table>
+                <tr><td>Id Pesanan</td><td>: Pesan1212202401</td></tr>
+                <tr><td>Id Pelanggan</td><td>: S12122024001</td></tr>
+                <tr><td>Nama</td><td>: Samuel Orief Rosario</td></tr>
+                <tr><td>Waktu</td><td>: 7 Hari</td></tr>
+                <tr><td>Tanggal</td><td>: 12-12-2024 sampai 19-12-2024</td></tr>
+                <tr><td class="align-top">Lokasi</td><td class="align-top">: Jl. Bhakti No.48 3, RT.3/RW.7, Cilandak Tim., Ps. Minggu, Kota Jakarta Selatan</td></tr>
+            </table>
+            <p class="mt-3 text-danger fw-bold">*Sedang Proses Pengerjaan, Tidak Bisa Dipanggil Untuk Melakukan Pekerjaan lain.</p>
+            <div class="mt-3"><button class="btn btn-primary btn-sm">Telpon Pekerja</button><button class="btn btn-success btn-sm mx-1">Tambahkan</button><button class="btn btn-dark btn-sm">Edit</button></div>
         </div>
     </div>
-</div>
+<?php else: ?>
+     <div class="detail-pekerja-card justify-content-center">
+        <div class="pekerja-avatar text-center"><img src="<?= base_url('assets/pekerja_tidak_bekerja.png') ?>" alt="Pekerja" style="max-width: 150px;" class="mb-2"><h6>Pekerja Tersedia</h6><p>Pekerja: 14 Orang</p></div>
+        <div class="pekerja-info ms-4">
+            <h3 class="fw-bold">Tersedia <span class="text-success">Jasa Pekerja</span></h3><p>Tidak Sedang Melakukan Pekerjaan</p>
+            <div class="mt-3"><button class="btn btn-primary btn-sm">Telpon Pekerja</button><button class="btn btn-success btn-sm mx-1">Tambahkan</button><button class="btn btn-dark btn-sm">Edit</button></div>
+        </div>
+    </div>
+<?php endif; ?>
 <?= $this->endSection() ?>

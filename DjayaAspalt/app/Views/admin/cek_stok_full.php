@@ -1,27 +1,63 @@
-<?= $this->extend('layout/admin_main') ?>
-<?= $this->section('content') ?>
-<div class="container py-4">
-    <div class="d-flex align-items-center mb-4">
-        <a href="javascript:history.back()" class="me-3">
-            <img src="<?= base_url('assets/Back-01.png') ?>" width="43" alt="Back">
-        </a>
-        <h2 class="mb-0">Cek Stok</h2>
-    </div>
+<?= $this->extend('layout/admin_cek_main') ?>
 
-    <div class="row justify-content-center">
-        <?php foreach ($materials as $material): ?>
-        <div class="col-md-4 col-lg-3 mb-4">
-            <div class="admin-card h-100">
-                <img src="<?= base_url('assets/' . $material['image']) ?>" alt="<?= $material['nama'] ?>">
-                <h5 class="fw-bold"><?= $material['nama'] ?></h5>
-                <p>Stok: <?= $material['stok'] ?></p>
-                <div class="mt-3">
-                    <button class="btn btn-success btn-sm me-2">Tambahkan</button>
-                    <button class="btn btn-warning btn-sm">Edit</button>
-                </div>
+<?= $this->section('content') ?>
+
+<div class="row">
+    <div class="col-md-4 col-6 mb-4">
+        <div class="admin-card h-100">
+            <img src="<?= base_url('assets/stok_full_1.png') ?>" class="img-fluid rounded mb-3">
+            <h6 class="fw-bold">Gelaran Batu Makadam</h6>
+            <p class="mb-2">Stok: 31 ton</p>
+            <div>
+                <button class="btn btn-success btn-sm">Tambahkan</button>
+                <button class="btn btn-dark btn-sm">Edit</button>
             </div>
         </div>
-        <?php endforeach; ?>
+    </div>
+    <div class="col-md-4 col-6 mb-4">
+        <div class="admin-card h-100">
+            <img src="<?= base_url('assets/stok_full_2.png') ?>" class="img-fluid rounded mb-3">
+            <h6 class="fw-bold">Gelaran Batu Course/Base</h6>
+            <p class="mb-2">Stok: 28 ton</p>
+            <div>
+                <button class="btn btn-success btn-sm">Tambahkan</button>
+                <button class="btn btn-dark btn-sm">Edit</button>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 col-6 mb-4">
+        <div class="admin-card h-100">
+            <img src="<?= base_url('assets/stok_full_3.png') ?>" class="img-fluid rounded mb-3">
+            <h6 class="fw-bold">Gelaran Abu Batu</h6>
+            <p class="mb-2">Stok: 29 ton</p>
+            <div>
+                <button class="btn btn-success btn-sm">Tambahkan</button>
+                <button class="btn btn-dark btn-sm">Edit</button>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 col-6 mb-4">
+        <div class="admin-card h-100">
+            <img src="<?= base_url('assets/stok_full_4.png') ?>" class="img-fluid rounded mb-3">
+            <h6 class="fw-bold">Gelaran Batu Split</h6>
+            <p class="mb-2">Stok: 36 ton</p>
+            <div>
+                <button class="btn btn-success btn-sm">Tambahkan</button>
+                <button class="btn btn-dark btn-sm">Edit</button>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 col-6 mb-4">
+        <div class="admin-card h-100">
+            <img src="<?= base_url('assets/stok_full_5.png') ?>" class="img-fluid rounded mb-3">
+            <h6 class="fw-bold">Gelaran Aspal Hotmix</h6>
+            <p class="mb-2">Stok: 58 ton</p>
+            <div>
+                <button class="btn btn-success btn-sm">Tambahkan</button>
+                <button class="btn btn-dark btn-sm">Edit</button>
+            </div>
+        </div>
     </div>
 </div>
+
 <?= $this->endSection() ?>

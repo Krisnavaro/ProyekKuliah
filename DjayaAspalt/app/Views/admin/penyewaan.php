@@ -1,61 +1,70 @@
-<?= $this->extend('layout/admin_main') ?>
+<?= $this->extend('layout/admin_kosong') ?>
+
 <?= $this->section('content') ?>
 
-<div class="container py-4">
-    <div class="d-flex align-items-center mb-4">
-        <a href="javascript:history.back()" class="me-3">
-            <img src="<?= base_url('assets/Back-01.png') ?>" width="43" alt="Back">
-        </a>
-        <h2 class="mb-0">Data Penyewaan</h2>
-    </div>
+<style>
+    .card-revisi { border-radius: 15px; background-color: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border: none; }
+    .card-revisi .card-header { background-color: #ff9933; color: black; font-weight: bold; border-top-left-radius: 15px; border-top-right-radius: 15px; padding: 1rem 1.5rem; }
+    .card-revisi .table thead th { background-color: #343a40; color: white; text-align: center; font-weight: 600; vertical-align: middle; }
+    .card-revisi .table tbody td { text-align: center; vertical-align: middle; }
+    .action-buttons .btn { color: white; font-weight: bold; padding: 0.25rem 0.5rem; font-size: 0.8rem; }
+    .empty-state { padding: 4rem; text-align: center; }
+    .empty-state img { max-width: 150px; margin-bottom: 1.5rem; }
+</style>
 
-    <div class="admin-table p-4 mb-4">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h4 class="mb-0 fw-bold">Daftar Semua Penyewaan</h4>
-            <div>
-                <button class="btn btn-sm btn-success btn-table"><img src="<?= base_url('assets/plus_icon.png') ?>" width="18" alt="Tambahkan"> Tambahkan</button>
-            </div>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="fw-bold m-0"><?= esc($page_title) ?></h4>
+    <a href="#" class="btn btn-success">Tambahkan Penyewaan</a>
+</div>
+
+<?php if (empty($penyewaan_per_bulan)): ?>
+    <div class="card card-revisi">
+        <div class="card-body empty-state">
+            <img src="<?= base_url('assets/table_cat_animated.gif') ?>" alt="Tidak Ada Data">
+            <h5 class="text-danger">Tidak Ada Data Penyewaan</h5>
+            <p>Silakan tambahkan data penyewaan baru.</p>
         </div>
-        
-        <?php if (!empty($penyewaan_list)): ?>
-            <table>
+    </div>
+<?php else: ?>
+    <?php foreach ($penyewaan_per_bulan as $bulan => $items): ?>
+    <div class="card card-revisi mb-4">
+        <div class="card-header">
+            Data Penyewaan bulan <?= $bulan ?>
+        </div>
+        <div class="card-body table-responsive p-0">
+            <table class="table table-bordered table-striped mb-0">
                 <thead>
                     <tr>
                         <th>ID Sewa</th>
-                        <th>Nama Pelanggan</th>
-                        <th>Nama Alat</th>
-                        <th>Harga Sewa</th>
+                        <th>ID Alat</th>
+                        <th>ID Penyewa</th>
+                        <th>Harga</th>
                         <th>Tanggal Sewa</th>
                         <th>Alamat</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($penyewaan_list as $item): ?>
+                    <?php foreach ($items as $item): ?>
                         <tr>
                             <td><?= esc($item['id_sewa']) ?></td>
-                            <td><?= esc($item['nama_lengkap']) ?></td>
-                            <td><?= esc($item['nama_alat']) ?></td>
-                            <td>Rp <?= number_format(esc($item['harga_alatdisewa']), 0, ',', '.') ?></td>
-                            <td><?= esc($item['tanggal_penyewaan']) ?></td>
+                            <td><?= esc($item['id_alat']) ?></td>
+                            <td><?= esc($item['id_namasewa']) ?></td>
+                            <td>Rp. <?= number_format($item['harga_alatdisewa'], 0, ',', '.') ?></td>
+                            <td><?= date('d-m-Y', strtotime($item['tanggal_penyewaan'])) ?></td>
                             <td><?= esc($item['alamat_penyewa']) ?></td>
-                            <td>
-                                <button class="btn btn-sm btn-warning btn-table">Edit</button>
-                                <button class="btn btn-sm btn-danger btn-table">Hapus</button>
+                            <td class="action-buttons">
+                                <a href="#" class="btn btn-dark btn-sm">View</a>
+                                <a href="#" class="btn btn-warning btn-sm">Edit</a>
+                                <a href="#" class="btn btn-danger btn-sm">Delete</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
             </table>
-        <?php else: ?>
-            <div class="text-center mt-5">
-                <img src="<?= base_url('assets/table_cat_animated.gif') ?>" alt="Tidak Ada Data" style="max-width: 150px;">
-                <h4 class="text-danger mt-3 fw-bold">Belum Ada Data Penyewaan</h4>
-                <p>Silakan tambahkan data baru.</p>
-            </div>
-        <?php endif; ?>
-
+        </div>
     </div>
-</div>
+    <?php endforeach; ?>
+<?php endif; ?>
 
 <?= $this->endSection() ?>

@@ -9,6 +9,7 @@ use App\Models\PembayaranModel;
 use App\Models\PemesananModel;
 use App\Models\PengembalianModel;
 use App\Models\PenyewaanModel;
+use App\Models\UserModel;
 use CodeIgniter\I18n\Time;
 
 class Admin extends BaseController
@@ -26,6 +27,7 @@ class Admin extends BaseController
             $monthYear = Time::parse($item[$dateColumn])->toLocalizedString('MMMM YYYY');
             $grouped[$monthYear][] = $item;
         }
+        krsort($grouped); // Mengurutkan dari bulan terbaru
         return $grouped;
     }
 
@@ -64,7 +66,6 @@ class Admin extends BaseController
     {
         $model = new PemesananModel();
         $data = [
-            // page_title tidak perlu karena akan diambil dari layout khusus
             'pemesanan_per_bulan' => $this->groupDataByMonth($model->orderBy('tanggal_pemesanan', 'DESC')->findAll(), 'tanggal_pemesanan')
         ];
         return view('admin/pemesanan', $data);
@@ -109,4 +110,16 @@ class Admin extends BaseController
         ];
         return view('admin/pengembalian', $data);
     }
+
+    /**
+     * Halaman form tambah data
+     */
+    public function tambahPelanggan() { return view('admin/tambah_pelanggan', ['page_title' => 'Tambah Pelanggan']); }
+    public function tambahPelaksanaan() { return view('admin/tambah_pelaksanaan', ['page_title' => 'Tambah Pelaksanaan']); }
+    public function tambahPemesanan() { return view('admin/tambah_pemesanan'); }
+    public function tambahPenyewaan() { return view('admin/tambah_penyewaan', ['page_title' => 'Tambah Penyewaan']); }
+    public function tambahAlat() { return view('admin/tambah_alat', ['page_title' => 'Tambah Alat']); }
+    public function tambahPembayaran() { return view('admin/tambah_pembayaran', ['page_title' => 'Tambah Pembayaran']); }
+    public function tambahPengembalian() { return view('admin/tambah_pengembalian', ['page_title' => 'Tambah Pengembalian']); }
+
 }

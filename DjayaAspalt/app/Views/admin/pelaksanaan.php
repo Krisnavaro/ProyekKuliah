@@ -13,7 +13,7 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h4 class="fw-bold m-0"><?= esc($page_title ?? 'Data Pelaksanaan') ?></h4>
-    <a href="#" class="btn btn-success">Tambahkan Data Pelaksanaan</a>
+    <a href="<?= base_url('admin/pelaksanaan/tambah') ?>" class="btn btn-success">Tambahkan Data Pelaksanaan</a>
 </div>
 
 <?php if (empty($pelaksanaan_per_bulan)): ?>
@@ -49,8 +49,8 @@
                             <td><?= esc($item['waktu_pengerjaan']) ?></td>
                             <td class="action-buttons">
                                 <a href="#" class="btn btn-dark btn-sm">View</a>
-                                <a href="#" class="btn btn-warning btn-sm">Edit</a>
-                                <a href="#" class="btn btn-danger btn-sm">Delete</a>
+                                <a href="<?= base_url('admin/pelaksanaan/edit/' . $item['id_pelaksanaan']) ?>" class="btn btn-warning btn-sm">Edit</a>
+                                <a href="<?= base_url('admin/pelaksanaan/hapus/' . $item['id_pelaksanaan']) ?>" class="btn btn-danger btn-sm" onclick="return confirm('Anda yakin?')">Delete</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>

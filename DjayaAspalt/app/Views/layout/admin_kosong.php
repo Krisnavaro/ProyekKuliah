@@ -1,68 +1,55 @@
-<?= $this->extend('layout/admin_pemesanan') ?>
-
-<?= $this->section('content') ?>
-
-<style>
-    .card-revisi { border-radius: 15px; background-color: #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.05); border: none; }
-    .card-revisi .card-header { background-color: #ff9933; color: black; font-weight: bold; border-top-left-radius: 15px; border-top-right-radius: 15px; padding: 1rem 1.5rem; }
-    .card-revisi .table thead th { background-color: #343a40; color: white; text-align: center; font-weight: 600; vertical-align: middle; }
-    .card-revisi .table tbody td { text-align: center; vertical-align: middle; }
-    .action-buttons .btn { color: white; font-weight: bold; padding: 0.25rem 0.5rem; font-size: 0.8rem; }
-    .empty-state { padding: 4rem; text-align: center; }
-    .empty-state img { max-width: 150px; margin-bottom: 1.5rem; }
-</style>
-
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h4 class="fw-bold m-0">Data Pemesanan</h4>
-    <a href="#" class="btn btn-success">Tambahkan Pemesanan</a>
-</div>
-
-<?php if (empty($pemesanan_per_bulan)): ?>
-    <div class="card card-revisi">
-        <div class="card-body empty-state">
-            <img src="<?= base_url('assets/table_cat_animated.gif') ?>" alt="Tidak Ada Data">
-            <h5 class="text-danger">Tidak Ada Data Pemesanan</h5>
-            <p>Silakan tambahkan data pemesanan baru.</p>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?= esc($page_title ?? 'Djaya Aspalt Admin') ?></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #F0F2F5; }
+        .admin-wrapper { display: flex; }
+        .admin-sidebar {
+            width: 250px; min-height: 100vh; background-color: #ffffff;
+            padding-top: 1.5rem; position: fixed; height: 100%;
+            border-right: 1px solid #e0e0e0;
+        }
+        .sidebar-header { padding: 0 1.5rem; }
+        .sidebar-header a { text-decoration: none; color: black; display: flex; align-items: center; }
+        .sidebar-header img { width: 32px; height: 32px; margin-right: 10px; }
+        .sidebar-header h5 { margin: 0; font-weight: 600; }
+        .admin-main-content-wrapper { margin-left: 250px; width: calc(100% - 250px); }
+        .admin-topbar {
+            background-color: #ffffff; padding: 1rem 2rem; border-bottom: 1px solid #e0e0e0;
+            display: flex; justify-content: space-between; align-items: center; height: 70px;
+        }
+        .search-container { position: relative; width: 50%; }
+        .search-container input { width: 100%; padding: 8px 15px 8px 40px; border-radius: 20px; border: 1px solid #ccc; background-color: #f5f5f5; }
+        .topbar-profile a { text-decoration: none; color: #0d6efd; font-weight: 500; }
+        .admin-main-content { padding: 2rem; background-color: #FFDAB9; min-height: calc(100vh - 70px); }
+    </style>
+</head>
+<body>
+    <div class="admin-wrapper">
+        <div class="admin-sidebar">
+            <div class="sidebar-header">
+                <a href="<?= base_url('admin') ?>">
+                    <img src="<?= base_url('assets/Back-01.png') ?>" alt="Back">
+                    <h5><?= esc($page_title ?? 'Kembali') ?></h5>
+                </a>
+            </div>
+        </div>
+        <div class="admin-main-content-wrapper">
+            <div class="admin-topbar">
+                <div class="search-container">
+                    <input class="form-control" type="search" placeholder="Cari...">
+                </div>
+                <div class="topbar-profile"><a href="#">Foto Profil</a></div>
+            </div>
+            <div class="admin-main-content">
+                <?= $this->renderSection('content') ?>
+            </div>
         </div>
     </div>
-<?php else: ?>
-    <?php foreach ($pemesanan_per_bulan as $bulan => $items): ?>
-    <div class="card card-revisi mb-4">
-        <div class="card-header">
-            Data Pemesanan bulan <?= $bulan ?>
-        </div>
-        <div class="card-body table-responsive p-0">
-            <table class="table table-bordered table-striped mb-0">
-                <thead>
-                    <tr>
-                        <th>ID Pesanan</th>
-                        <th>ID Pelaksanaan</th>
-                        <th>Nama Paket</th>
-                        <th>Harga</th>
-                        <th>Tanggal Pesan</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($items as $item): ?>
-                        <tr>
-                            <td><?= esc($item['id_pesanan']) ?></td>
-                            <td><?= esc($item['id_pelaksanaan']) ?></td>
-                            <td><?= esc($item['nama_paketdipesan']) ?></td>
-                            <td>Rp. <?= number_format($item['harga_paketdipesan'], 0, ',', '.') ?></td>
-                            <td><?= date('d-m-Y', strtotime($item['tanggal_pemesanan'])) ?></td>
-                            <td class="action-buttons">
-                                <a href="#" class="btn btn-dark btn-sm">View</a>
-                                <a href="#" class="btn btn-warning btn-sm">Edit</a>
-                                <a href="#" class="btn btn-danger btn-sm">Delete</a>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <?php endforeach; ?>
-<?php endif; ?>
-
-<?= $this->endSection() ?>
+</body>
+</html>

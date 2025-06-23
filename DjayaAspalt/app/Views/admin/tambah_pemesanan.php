@@ -1,4 +1,4 @@
-<?= $this->extend('layout/admin_main') ?>
+<?= $this->extend('layout/admin_pemesanan') ?>
 
 <?= $this->section('content') ?>
 
@@ -15,14 +15,7 @@
             </div>
             <div class="mb-3">
                 <label for="id_pelaksanaan" class="form-label">ID Pelaksanaan</label>
-                <select class="form-select" id="id_pelaksanaan" name="id_pelaksanaan" required>
-                    <option value="" selected disabled>Pilih ID Pelaksanaan...</option>
-                     <?php if (!empty($pelaksanaan)): ?>
-                        <?php foreach ($pelaksanaan as $p): ?>
-                            <option value="<?= esc($p['id_pelaksanaan']) ?>">ID: <?= esc($p['id_pelaksanaan']) ?> (Alamat: <?= esc($p['alamat_pelaksanaan']) ?>)</option>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
-                </select>
+                <input type="text" class="form-control" id="id_pelaksanaan" name="id_pelaksanaan" placeholder="Masukkan ID Pelaksanaan yang ada" required>
             </div>
             <div class="mb-3">
                 <label for="nama_paketdipesan" class="form-label">Nama Paket Dipesan</label>
@@ -30,7 +23,7 @@
             </div>
             <div class="mb-3">
                 <label for="harga_paketdipesan" class="form-label">Harga Paket Dipesan</label>
-                <input type="number" class="form-control" id="harga_paketdipesan" name="harga_paketdipesan" placeholder="Contoh: 70000" required>
+                <input type="number" class="form-control" id="harga_paketdipesan" name="harga_paketdipesan" min="0" required>
             </div>
              <div class="mb-3">
                 <label for="tanggal_pemesanan" class="form-label">Tanggal Pemesanan</label>

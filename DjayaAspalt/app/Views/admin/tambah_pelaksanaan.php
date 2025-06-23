@@ -1,4 +1,4 @@
-<?= $this->extend('layout/admin_main') ?>
+<?= $this->extend('layout/admin_kosong') ?>
 
 <?= $this->section('content') ?>
 
@@ -10,15 +10,8 @@
             <?= csrf_field() ?>
 
             <div class="mb-3">
-                <label for="id_pelanggan" class="form-label">Nama Klien</label>
-                <select class="form-select" id="id_pelanggan" name="id_pelanggan" required>
-                    <option value="" selected disabled>Pilih Klien...</option>
-                    <?php if (!empty($pelanggan)): ?>
-                        <?php foreach ($pelanggan as $p): ?>
-                            <option value="<?= esc($p['id_pelanggan']) ?>"><?= esc($p['nama_lengkap']) ?></option>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
-                </select>
+                <label for="id_pelanggan" class="form-label">ID Pelanggan</label>
+                <input type="text" class="form-control" name="id_pelanggan" id="id_pelanggan" required placeholder="Masukkan ID Pelanggan yang terdaftar">
             </div>
             <div class="mb-3">
                 <label for="tanggal_pelaksanaan" class="form-label">Tanggal Pelaksanaan</label>

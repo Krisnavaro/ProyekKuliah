@@ -64,6 +64,7 @@ class Admin extends BaseController
     {
         $model = new PemesananModel();
         $data = [
+            // page_title tidak perlu karena akan diambil dari layout khusus
             'pemesanan_per_bulan' => $this->groupDataByMonth($model->orderBy('tanggal_pemesanan', 'DESC')->findAll(), 'tanggal_pemesanan')
         ];
         return view('admin/pemesanan', $data);

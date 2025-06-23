@@ -1,5 +1,4 @@
 <?= $this->extend('layout/admin_cek_main') ?>
-
 <?= $this->section('content') ?>
 <style>
     .detail-pekerja-card { display: flex; align-items: center; background-color: white; padding: 2rem; border-radius: 15px; }

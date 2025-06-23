@@ -1,4 +1,4 @@
-<?= $this->extend('layout/admin_main') ?>
+<?= $this->extend('layout/admin_kosong') ?>
 
 <?= $this->section('content') ?>
 
@@ -14,30 +14,16 @@
                 <input type="text" class="form-control" id="id_sewa" name="id_sewa" required>
             </div>
             <div class="mb-3">
-                <label for="id_alat" class="form-label">Alat yang Disewa</label>
-                <select class="form-select" id="id_alat" name="id_alat" required>
-                    <option value="" selected disabled>Pilih Alat...</option>
-                    <?php if (!empty($alat)): ?>
-                        <?php foreach ($alat as $a): ?>
-                            <option value="<?= esc($a['id_alat']) ?>"><?= esc($a['nama_alat']) ?></option>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
-                </select>
+                <label for="id_alat" class="form-label">ID Alat</label>
+                <input type="text" class="form-control" id="id_alat" name="id_alat" required>
             </div>
             <div class="mb-3">
-                <label for="id_namasewa" class="form-label">Nama Penyewa (Pelanggan)</label>
-                 <select class="form-select" id="id_namasewa" name="id_namasewa" required>
-                    <option value="" selected disabled>Pilih Penyewa...</option>
-                    <?php if (!empty($pelanggan)): ?>
-                        <?php foreach ($pelanggan as $p): ?>
-                            <option value="<?= esc($p['id_pelanggan']) ?>"><?= esc($p['nama_lengkap']) ?></option>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
-                </select>
+                <label for="id_namasewa" class="form-label">ID Penyewa (Pelanggan)</label>
+                <input type="text" class="form-control" id="id_namasewa" name="id_namasewa" required>
             </div>
             <div class="mb-3">
                 <label for="harga_alatdisewa" class="form-label">Harga Alat Disewa</label>
-                <input type="number" class="form-control" id="harga_alatdisewa" name="harga_alatdisewa" required>
+                <input type="number" class="form-control" id="harga_alatdisewa" name="harga_alatdisewa" min="0" required>
             </div>
              <div class="mb-3">
                 <label for="tanggal_penyewaan" class="form-label">Tanggal Penyewaan</label>

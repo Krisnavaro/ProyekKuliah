@@ -1,7 +1,5 @@
 <?= $this->extend('layout/admin_cek_main') ?>
-
 <?= $this->section('content') ?>
-
 <div class="row">
     <div class="col-md-4 col-6 mb-4">
         <div class="admin-card h-100">
@@ -59,5 +57,4 @@
         </div>
     </div>
 </div>
-
 <?= $this->endSection() ?>

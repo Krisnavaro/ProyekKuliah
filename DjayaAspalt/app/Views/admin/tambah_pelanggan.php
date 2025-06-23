@@ -1,4 +1,4 @@
-<?= $this->extend('layout/admin_main') ?>
+<?= $this->extend('layout/admin_kosong') ?>
 
 <?= $this->section('content') ?>
 
@@ -11,15 +11,15 @@
             
             <div class="mb-3">
                 <label for="id_pelanggan" class="form-label">ID Pelanggan</label>
-                <input type="text" class="form-control" id="id_pelanggan" name="id_pelanggan" placeholder="Contoh: S220625001" required>
+                <input type="text" class="form-control" id="id_pelanggan" name="id_pelanggan" placeholder="Contoh: S230625001" required>
             </div>
             <div class="mb-3">
                 <label for="id_survey" class="form-label">ID Survey (Opsional)</label>
-                <input type="text" class="form-control" id="id_survey" name="id_survey" placeholder="Contoh: Survey220625001">
+                <input type="text" class="form-control" id="id_survey" name="id_survey" placeholder="Contoh: Survey230625001">
             </div>
             <div class="mb-3">
                 <label for="id_namasewa" class="form-label">ID Nama Sewa (Opsional)</label>
-                <input type="text" class="form-control" id="id_namasewa" name="id_namasewa" placeholder="Contoh: Sewa220625001">
+                <input type="text" class="form-control" id="id_namasewa" name="id_namasewa" placeholder="Contoh: Sewa230625001">
             </div>
             <div class="mb-3">
                 <label for="nama_lengkap" class="form-label">Nama Lengkap</label>

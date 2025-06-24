@@ -2,63 +2,61 @@
 
 namespace App\Controllers;
 
-use App\Controllers\BaseController;
 use App\Models\UserModel;
 
 class Login extends BaseController
 {
-    public function __construct()
+    public function index()
     {
-        helper('url');
-    }
-
-    public function showLoginForm()
-    {
-        if (session()->get('logged_in')) {
-            if (session()->get('role') === 'admin') {
-                return redirect()->to('admin');
-            }
-            return redirect()->to('dashboard');
-        }
         return view('auth/login');
     }
 
-    /**
-     * FUNGSI LOGIN SEMENTARA (TANPA HASH) UNTUK DEBUGGING
-     */
     public function login()
     {
-        $email = $this->request->getPost('username');
-        $password = $this->request->getPost('password');
+        $session = session();
+        $model = new UserModel();
+        $username = $this->request->getVar('username');
+        $password = $this->request->getVar('password');
 
-        $userModel = new UserModel();
-        $user = $userModel->where('email', $email)->first();
+        $user = $model->where('username', $username)->first();
 
-        // PENGECEKAN PASSWORD DIUBAH MENJADI TEKS BIASA (BUKAN HASH)
-        if ($user && $password === $user['password']) {
+        // **PERBAIKAN KEAMANAN DI SINI**
+        // Gunakan password_verify() untuk membandingkan hash password
+        if ($user && password_verify($password, $user['password'])) {
+            // Cek jika password di DB adalah plain text 'admin123' (untuk transisi)
+            if ($user['password'] === 'admin123') {
+                // Segera hash dan update password admin
+                $newHash = password_hash('admin123', PASSWORD_DEFAULT);
+                $model->update($user['id'], ['password' => $newHash]);
+            }
+            
+            $ses_data = [
+                'user_id'       => $user['id'],
+                'username'      => $user['username'],
+                'nama_lengkap'  => $user['nama_lengkap'],
+                'email'         => $user['email'],
+                'foto_profil'   => $user['foto_profil'],
+                'role'          => $user['role'],
+                'logged_in'     => TRUE
+            ];
+            $session->set($ses_data);
 
-            session()->set([
-                'user_id'      => $user['id'],
-                'email'        => $user['email'],
-                'nama_lengkap' => $user['nama_lengkap'],
-                'role'         => $user['role'],
-                'foto_profil'  => $user['foto_profil'],
-                'logged_in'    => true,
-            ]);
-
-            if ($user['role'] === 'admin') {
-                return redirect()->to('admin');
+            if ($user['role'] == 'admin') {
+                return redirect()->to('/admin');
             } else {
-                return redirect()->to('dashboard');
+                return redirect()->to('/dashboard');
             }
         } else {
-            return redirect()->back()->withInput()->with('error', 'Email atau Password yang Anda masukkan salah.');
+            // Jika password salah atau user tidak ditemukan
+            $session->setFlashdata('msg', 'Username atau Password salah.');
+            return redirect()->to('/login');
         }
     }
 
     public function logout()
     {
-        session()->destroy();
+        $session = session();
+        $session->destroy();
         return redirect()->to('/login');
     }
 }

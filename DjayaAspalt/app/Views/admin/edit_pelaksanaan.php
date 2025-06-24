@@ -1,4 +1,5 @@
 <?= $this->extend('layout/admin_main') ?>
+
 <?= $this->section('content') ?>
 
 <div class="container py-4">
@@ -10,7 +11,7 @@
     </div>
 
     <div class="card p-4 shadow-sm">
-        <form action="<?= base_url('admin/pelaksanaan/update') ?>" method="post">
+        <form action="<?= base_url('admin/pelaksanaan/update/' . $pelaksanaan['id_pelaksanaan']) ?>" method="post">
             <?= csrf_field() ?>
             <input type="hidden" name="id_pelaksanaan" value="<?= esc($pelaksanaan['id_pelaksanaan']) ?>">
 
@@ -18,16 +19,18 @@
                 <label for="id_pelanggan" class="form-label">Pilih Pelanggan</label>
                 <select class="form-control" id="id_pelanggan" name="id_pelanggan" required>
                     <option value="">-- Pilih Nama Klien --</option>
-                    <?php foreach($pelanggan_list as $pelanggan): ?>
-                        <option value="<?= $pelanggan['id'] ?>" <?= ($pelanggan['id'] == $pelaksanaan['id_pelanggan']) ? 'selected' : '' ?>>
-                            <?= esc($pelanggan['nama_lengkap']) ?>
-                        </option>
-                    <?php endforeach; ?>
+                    <?php if (!empty($pelanggan_list)): ?>
+                        <?php foreach($pelanggan_list as $pelanggan): ?>
+                            <option value="<?= esc($pelanggan['id_pelanggan']) ?>" <?= ($pelanggan['id_pelanggan'] == $pelaksanaan['id_pelanggan']) ? 'selected' : '' ?>>
+                                <?= esc($pelanggan['nama_lengkap']) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </select>
             </div>
             <div class="mb-3">
                 <label for="tanggal_pelaksanaan" class="form-label">Tanggal Pelaksanaan</label>
-                <input type="date" class="form-control" id="tanggal_pelaksanaan" name="tanggal_pelaksanaan" value="<?= esc($pelaksanaan['tanggal_pelaksanaan']) ?>" required>
+                <input type="datetime-local" class="form-control" id="tanggal_pelaksanaan" name="tanggal_pelaksanaan" value="<?= esc(date('Y-m-d\TH:i', strtotime($pelaksanaan['tanggal_pelaksanaan']))) ?>" required>
             </div>
             <div class="mb-3">
                 <label for="alamat_pelaksanaan" class="form-label">Alamat Pelaksanaan</label>
@@ -39,6 +42,7 @@
             </div>
             
             <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+            <a href="<?= base_url('admin/pelaksanaan') ?>" class="btn btn-secondary">Batal</a>
         </form>
     </div>
 </div>

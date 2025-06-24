@@ -1,4 +1,4 @@
-<?= $this->extend('layout/admin_kosong') ?>
+<?= $this->extend('layout/admin_main') ?>
 
 <?= $this->section('content') ?>
 <style>
@@ -7,18 +7,25 @@
     .table thead th { background-color: #343a40; color: white; text-align: center; font-weight: 600; vertical-align: middle; }
     .table tbody td { text-align: center; vertical-align: middle; }
     .action-buttons .btn { color: white !important; font-weight: bold; padding: 0.25rem 0.5rem; font-size: 0.8rem; border: none; }
-    .action-buttons .btn-dark img, .action-buttons .btn-warning img, .action-buttons .btn-danger img { display: none; } /* Sembunyikan ikon jika ada */
 </style>
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h4 class="fw-bold m-0"><?= esc($page_title ?? 'Manajemen Pelanggan') ?></h4>
-    <a href="#" class="btn btn-success">Tambahkan Pelanggan</a>
+    <a href="<?= base_url('admin/pelanggan/tambah') ?>" class="btn btn-success">Tambahkan Pelanggan</a>
 </div>
+
+<?php if (session()->getFlashdata('success')) : ?>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <?= session()->getFlashdata('success') ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<?php endif; ?>
 
 <?php if (empty($pelanggan_per_bulan)): ?>
     <div class="card card-revisi">
         <div class="card-body text-center p-5">
             <h5 class="text-danger">Tidak Ada Data Pelanggan</h5>
+            <p>Silakan klik tombol "Tambahkan Pelanggan" untuk memulai.</p>
         </div>
     </div>
 <?php else: ?>
@@ -37,16 +44,16 @@
                     <?php foreach ($items as $item): ?>
                         <tr>
                             <td><?= esc($item['id_pelanggan']) ?></td>
-                            <td><?= esc($item['id_survey']) ?></td>
-                            <td><?= esc($item['id_namasewa']) ?></td>
+                            <td><?= esc($item['id_survey']) ?: '-' ?></td>
+                            <td><?= esc($item['id_namasewa']) ?: '-' ?></td>
                             <td><?= esc($item['nama_lengkap']) ?></td>
                             <td><?= esc($item['no_telpon']) ?></td>
                             <td><?= date('d-m-Y', strtotime($item['tanggal_survey'])) ?></td>
                             <td><?= esc($item['lokasi_survey']) ?></td>
                             <td class="action-buttons">
-                                <a href="#" class="btn btn-dark btn-sm">View</a>
-                                <a href="#" class="btn btn-warning btn-sm">Edit</a>
-                                <a href="#" class="btn btn-danger btn-sm">Delete</a>
+                                <a href="<?= base_url('admin/pelanggan/view/' . $item['id_pelanggan']) ?>" class="btn btn-dark btn-sm" title="Lihat Detail">View</a>
+                                <a href="<?= base_url('admin/pelanggan/edit/' . $item['id_pelanggan']) ?>" class="btn btn-warning btn-sm" title="Edit Data">Edit</a>
+                                <a href="<?= base_url('admin/pelanggan/hapus/' . $item['id_pelanggan']) ?>" class="btn btn-danger btn-sm" title="Hapus Data" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">Delete</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>

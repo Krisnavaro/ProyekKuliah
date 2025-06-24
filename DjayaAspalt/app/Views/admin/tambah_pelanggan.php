@@ -10,16 +10,8 @@
             <?= csrf_field() ?>
             
             <div class="mb-3">
-                <label for="id_pelanggan" class="form-label">ID Pelanggan</label>
-                <input type="text" class="form-control" id="id_pelanggan" name="id_pelanggan" placeholder="Contoh: S230625001" required>
-            </div>
-            <div class="mb-3">
-                <label for="id_survey" class="form-label">ID Survey (Opsional)</label>
-                <input type="text" class="form-control" id="id_survey" name="id_survey" placeholder="Contoh: Survey230625001">
-            </div>
-            <div class="mb-3">
                 <label for="id_namasewa" class="form-label">ID Nama Sewa (Opsional)</label>
-                <input type="text" class="form-control" id="id_namasewa" name="id_namasewa" placeholder="Contoh: Sewa230625001">
+                <input type="text" class="form-control" id="id_namasewa" name="id_namasewa" placeholder="Contoh: Sewa230625001. Jika diisi, ID Survey tidak akan dibuat.">
             </div>
             <div class="mb-3">
                 <label for="nama_lengkap" class="form-label">Nama Lengkap</label>

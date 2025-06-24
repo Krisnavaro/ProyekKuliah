@@ -1,4 +1,4 @@
-<?= $this->extend('layout/admin_kosong') ?>
+<?= $this->extend('layout/admin_main') ?>
 
 <?= $this->section('content') ?>
 <style>
@@ -15,6 +15,13 @@
     <h4 class="fw-bold m-0"><?= esc($page_title ?? 'Data Pelaksanaan') ?></h4>
     <a href="<?= base_url('admin/pelaksanaan/tambah') ?>" class="btn btn-success">Tambahkan Data Pelaksanaan</a>
 </div>
+
+<?php if (session()->getFlashdata('success')) : ?>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <?= session()->getFlashdata('success') ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<?php endif; ?>
 
 <?php if (empty($pelaksanaan_per_bulan)): ?>
     <div class="card card-revisi">
@@ -48,9 +55,8 @@
                             <td><?= esc($item['alamat_pelaksanaan']) ?></td>
                             <td><?= esc($item['waktu_pengerjaan']) ?></td>
                             <td class="action-buttons">
-                                <a href="#" class="btn btn-dark btn-sm">View</a>
                                 <a href="<?= base_url('admin/pelaksanaan/edit/' . $item['id_pelaksanaan']) ?>" class="btn btn-warning btn-sm">Edit</a>
-                                <a href="<?= base_url('admin/pelaksanaan/hapus/' . $item['id_pelaksanaan']) ?>" class="btn btn-danger btn-sm" onclick="return confirm('Anda yakin?')">Delete</a>
+                                <a href="<?= base_url('admin/pelaksanaan/hapus/' . $item['id_pelaksanaan']) ?>" class="btn btn-danger btn-sm" onclick="return confirm('Anda yakin ingin menghapus data ini?')">Delete</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>

@@ -25,7 +25,30 @@
         .admin-topbar { background-color: #ffffff; padding: 1rem 2rem; border-bottom: 1px solid #e0e0e0; display: flex; justify-content: space-between; align-items: center; height: 70px; }
         .search-container { position: relative; width: 50%; }
         .search-container input { width: 100%; padding: 8px 15px 8px 40px; border-radius: 20px; border: 1px solid #ccc; background-color: #f5f5f5; }
-        .topbar-profile a { text-decoration: none; color: #0d6efd; font-weight: 500; }
+        .topbar-profile .dropdown-toggle::after { display: none; }
+        .topbar-profile .profile-pic { width: 38px; height: 38px; object-fit: cover; border: 2px solid #ddd; }
+        .topbar-profile .dropdown-menu { 
+            width: 300px;
+            border-radius: .75rem; 
+            border: 1px solid #e9ecef;
+            padding: 0.5rem;
+        }
+        .dropdown-profile-header {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+        }
+        .dropdown-profile-header .user-info {
+            line-height: 1.3;
+            margin-left: 1rem;
+        }
+        .dropdown-profile-header .user-info small {
+            color: #6c757d;
+        }
+        .dropdown-menu .dropdown-item {
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+        }
         .admin-main-content { padding: 2rem; background-color: #FFDAB9; min-height: calc(100vh - 70px); }
     </style>
 </head>
@@ -37,25 +60,50 @@
                 <h5>DJAYA ASPALT</h5>
             </div>
             <div class="sidebar-menu">
-                <a href="<?= base_url('admin') ?>" class="active">Home</a>
-                <a href="<?= base_url('admin/pelanggan') ?>">Pelanggan</a>
-                <a href="<?= base_url('admin/pelaksanaan') ?>">Pelaksanaan</a>
-                <a href="<?= base_url('admin/pemesanan') ?>">Pemesanan</a>
-                <a href="<?= base_url('admin/penyewaan') ?>">Penyewaan</a>
-                <a href="<?= base_url('admin/alat') ?>">Alat</a>
-                <a href="<?= base_url('admin/pembayaran') ?>">Pembayaran</a>
-                <a href="<?= base_url('admin/pengembalian') ?>">Pengembalian</a>
+                <a href="<?= base_url('admin') ?>" class="<?= (uri_string() == 'admin') ? 'active' : '' ?>">Home</a>
+                <a href="<?= base_url('admin/pelanggan') ?>" class="<?= (strpos(uri_string(), 'admin/pelanggan') !== false) ? 'active' : '' ?>">Pelanggan</a>
+                <a href="<?= base_url('admin/pelaksanaan') ?>" class="<?= (strpos(uri_string(), 'admin/pelaksanaan') !== false) ? 'active' : '' ?>">Pelaksanaan</a>
+                <a href="<?= base_url('admin/pemesanan') ?>" class="<?= (strpos(uri_string(), 'admin/pemesanan') !== false) ? 'active' : '' ?>">Pemesanan</a>
+                <a href="<?= base_url('admin/penyewaan') ?>" class="<?= (strpos(uri_string(), 'admin/penyewaan') !== false) ? 'active' : '' ?>">Penyewaan</a>
+                <a href="<?= base_url('admin/alat') ?>" class="<?= (strpos(uri_string(), 'admin/alat') !== false) ? 'active' : '' ?>">Alat</a>
+                <a href="<?= base_url('admin/pembayaran') ?>" class="<?= (strpos(uri_string(), 'admin/pembayaran') !== false) ? 'active' : '' ?>">Pembayaran</a>
+                <a href="<?= base_url('admin/pengembalian') ?>" class="<?= (strpos(uri_string(), 'admin/pengembalian') !== false) ? 'active' : '' ?>">Pengembalian</a>
             </div>
         </div>
         <div class="admin-main-content-wrapper">
             <div class="admin-topbar">
                 <div class="search-container"><input class="form-control" type="search" placeholder="Cari..."></div>
-                <div class="topbar-profile"><a href="#">Foto Profil</a></div>
+                
+                <div class="topbar-profile dropdown">
+                    <a href="#" class="d-flex align-items-center link-dark text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="<?= (session()->get('foto_profil')) ? base_url('uploads/avatars/' . session()->get('foto_profil')) : base_url('assets/admin_profile_pic.png') ?>" alt="foto profil" class="rounded-circle profile-pic">
+                        <span class="ms-2"><?= esc(session()->get('nama_lengkap') ?? 'Admin') ?></span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end text-small shadow" aria-labelledby="dropdownUser1">
+                        <li>
+                            <div class="dropdown-profile-header">
+                                <img src="<?= (session()->get('foto_profil')) ? base_url('uploads/avatars/' . session()->get('foto_profil')) : base_url('assets/admin_profile_pic.png') ?>" alt="foto profil" class="rounded-circle" width="50" height="50">
+                                <div class="user-info">
+                                    <strong class="d-block text-truncate"><?= esc(session()->get('nama_lengkap') ?? 'Admin') ?></strong>
+                                    <small class="text-truncate"><?= esc(session()->get('email')) ?></small>
+                                </div>
+                            </div>
+                        </li>
+                        <li><hr class="dropdown-divider my-1"></li>
+                        <li><a class="dropdown-item" href="<?= base_url('admin/profile') ?>">Informasi Akun</a></li>
+                        <li><a class="dropdown-item text-danger" href="<?= base_url('logout') ?>">Logout</a></li>
+                    </ul>
+                </div>
+
             </div>
             <div class="admin-main-content">
                 <?= $this->renderSection('content') ?>
             </div>
         </div>
     </div>
+
+    <script>
+    // PASTE SEMUA KODE JAVASCRIPT DARI LANGKAH 1 DI SINI
+    </script>
 </body>
 </html>

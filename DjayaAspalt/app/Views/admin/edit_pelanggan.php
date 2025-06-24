@@ -24,15 +24,6 @@
                 <label for="lokasi_survey" class="form-label">Lokasi Survey / Pengiriman</label>
                 <textarea class="form-control" id="lokasi_survey" name="lokasi_survey" rows="3" required><?= esc($pelanggan['lokasi_survey']) ?></textarea>
             </div>
-            <div class="mb-3">
-                <label for="id_survey" class="form-label">ID Survey (Opsional)</label>
-                <input type="text" class="form-control" id="id_survey" name="id_survey" value="<?= esc($pelanggan['id_survey']) ?>">
-            </div>
-            <div class="mb-3">
-                <label for="id_namasewa" class="form-label">ID Nama Sewa (Opsional)</label>
-                <input type="text" class="form-control" id="id_namasewa" name="id_namasewa" value="<?= esc($pelanggan['id_namasewa']) ?>">
-            </div>
-
             <button type="submit" class="btn btn-primary">Update</button>
             <a href="<?= base_url('admin/pelanggan') ?>" class="btn btn-secondary">Batal</a>
         </form>

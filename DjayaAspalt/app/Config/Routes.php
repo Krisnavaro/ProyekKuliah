@@ -29,6 +29,7 @@ $routes->group('admin', ['filter' => 'auth:admin'], function($routes) {
 
     // Modul Pelanggan
     $routes->get('pelanggan', 'Admin::manajemenPengguna');
+    $routes->get('pelanggan/view/(:any)', 'Admin::viewPelanggan/$1');
     $routes->get('pelanggan/tambah', 'Admin::tambahPelanggan');
     $routes->post('pelanggan/simpan', 'Admin::simpanPelanggan');
     $routes->get('pelanggan/edit/(:any)', 'Admin::editPelanggan/$1');
@@ -92,5 +93,9 @@ $routes->group('admin', ['filter' => 'auth:admin'], function($routes) {
     
     // Rute profil
     $routes->get('profile', 'Admin::adminProfile');
+
+    // Rute untuk Edit Profil Admin
+    $routes->get('profile/edit', 'Admin::editAdminProfile');
+    $routes->post('profile/update', 'Admin::updateAdminProfile');
 
 });

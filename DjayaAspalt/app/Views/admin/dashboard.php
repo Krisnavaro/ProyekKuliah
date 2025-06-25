@@ -6,13 +6,13 @@
 <div id="carouselExampleControls" class="carousel slide mb-4" data-bs-ride="carousel">
     <div class="carousel-inner" style="border-radius: 15px;">
         <div class="carousel-item active">
-            <img src="<?= base_url('assets/slider_image_1.jpg') ?>" class="d-block w-100" alt="Slider 1"> <!-- Ganti dengan path gambar Anda -->
+            <img src="<?= base_url('assets/slider_image_1.jpg') ?>" class="d-block w-100" alt="Slider 1">
         </div>
         <div class="carousel-item">
-            <img src="<?= base_url('assets/slider_image_2.jpg') ?>" class="d-block w-100" alt="Slider 2"> <!-- Ganti dengan path gambar Anda -->
+            <img src="<?= base_url('assets/slider_image_2.jpg') ?>" class="d-block w-100" alt="Slider 2">
         </div>
         <div class="carousel-item">
-            <img src="<?= base_url('assets/slider_image_3.jpg') ?>" class="d-block w-100" alt="Slider 3"> <!-- Ganti dengan path gambar Anda -->
+            <img src="<?= base_url('assets/slider_image_3.jpg') ?>" class="d-block w-100" alt="Slider 3">
         </div>
     </div>
     <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
@@ -38,8 +38,6 @@
         </ol>
     </div>
 </div>
-
-<!-- Pastikan Anda memuat JavaScript Bootstrap jika belum ada -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <?= $this->endSection() ?>

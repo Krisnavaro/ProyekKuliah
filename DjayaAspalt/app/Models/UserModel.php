@@ -10,11 +10,6 @@ class UserModel extends Model
     protected $primaryKey       = 'id';
 
     protected $useAutoIncrement = true;
-
-    // Definisikan field mana saja yang boleh diisi atau diubah
-    // =============================================================
-    // TAMBAHKAN 'no_telpon' dan 'alamat_rumah' DI SINI
-    // =============================================================
     protected $allowedFields    = [
         'nama_lengkap',
         'username',
@@ -22,10 +17,8 @@ class UserModel extends Model
         'password',
         'role',
         'foto_profil',
-        'no_telpon',      // <-- Tambahkan ini
-        'alamat_rumah'    // <-- Tambahkan ini
+        'no_telpon',     
+        'alamat_rumah'   
     ];
-
-    // Kita nonaktifkan fitur timestamp otomatis
     protected $useTimestamps = false;
 }

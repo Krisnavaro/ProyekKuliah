@@ -2,61 +2,77 @@
 
 namespace App\Controllers;
 
+use App\Controllers\BaseController;
 use App\Models\UserModel;
 
 class Login extends BaseController
 {
-    public function index()
+    public function __construct()
     {
-        return view('auth/login');
+        helper('url');
     }
 
+    /**
+     * PERUBAHAN DI SINI:
+     * Fungsi ini tidak akan menampilkan halaman login terpisah lagi,
+     * tapi akan langsung mengarahkan ke dashboard.
+     */
+    public function showLoginForm()
+    {
+        // Jika sudah login, arahkan sesuai role
+        if (session()->get('logged_in')) {
+            if (session()->get('role') === 'admin') {
+                return redirect()->to('admin');
+            }
+            return redirect()->to('dashboard');
+        }
+
+        // Jika belum login, arahkan ke dashboard.
+        // Nanti di halaman dashboard, modal login akan otomatis muncul.
+        return redirect()->to('dashboard');
+    }
+
+    /**
+     * Fungsi untuk memproses login dari form modal.
+     */
     public function login()
     {
-        $session = session();
-        $model = new UserModel();
-        $username = $this->request->getVar('username');
-        $password = $this->request->getVar('password');
+        $email = $this->request->getPost('username'); // form menggunakan name 'username'
+        $password = $this->request->getPost('password');
 
-        $user = $model->where('username', $username)->first();
+        $userModel = new UserModel();
+        $user = $userModel->where('email', $email)->orWhere('username', $email)->first();
 
-        // **PERBAIKAN KEAMANAN DI SINI**
-        // Gunakan password_verify() untuk membandingkan hash password
+        // Menggunakan password_verify untuk keamanan
         if ($user && password_verify($password, $user['password'])) {
-            // Cek jika password di DB adalah plain text 'admin123' (untuk transisi)
-            if ($user['password'] === 'admin123') {
-                // Segera hash dan update password admin
-                $newHash = password_hash('admin123', PASSWORD_DEFAULT);
-                $model->update($user['id'], ['password' => $newHash]);
-            }
-            
-            $ses_data = [
-                'user_id'       => $user['id'],
-                'username'      => $user['username'],
-                'nama_lengkap'  => $user['nama_lengkap'],
-                'email'         => $user['email'],
-                'foto_profil'   => $user['foto_profil'],
-                'role'          => $user['role'],
-                'logged_in'     => TRUE
-            ];
-            $session->set($ses_data);
 
-            if ($user['role'] == 'admin') {
-                return redirect()->to('/admin');
+            session()->set([
+                'user_id'      => $user['id'],
+                'username'     => $user['username'],
+                'email'        => $user['email'],
+                'nama_lengkap' => $user['nama_lengkap'],
+                'role'         => $user['role'],
+                'foto_profil'  => $user['foto_profil'],
+                'logged_in'    => true,
+            ]);
+
+            if ($user['role'] === 'admin') {
+                return redirect()->to('admin');
             } else {
-                return redirect()->to('/dashboard');
+                return redirect()->to('dashboard');
             }
         } else {
-            // Jika password salah atau user tidak ditemukan
-            $session->setFlashdata('msg', 'Username atau Password salah.');
-            return redirect()->to('/login');
+            // Kembali ke halaman sebelumnya dengan pesan error
+            return redirect()->back()->withInput()->with('error', 'Email atau Password yang Anda masukkan salah.');
         }
     }
 
+    /**
+     * Fungsi untuk logout.
+     */
     public function logout()
     {
-        $session = session();
-        $session->destroy();
+        session()->destroy();
         return redirect()->to('/login');
     }
 }

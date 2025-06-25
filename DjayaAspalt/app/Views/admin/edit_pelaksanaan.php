@@ -21,9 +21,11 @@
                     <option value="">-- Pilih Nama Klien --</option>
                     <?php if (!empty($pelanggan_list)): ?>
                         <?php foreach($pelanggan_list as $pelanggan): ?>
+                            
                             <option value="<?= esc($pelanggan['id_pelanggan']) ?>" <?= ($pelanggan['id_pelanggan'] == $pelaksanaan['id_pelanggan']) ? 'selected' : '' ?>>
                                 <?= esc($pelanggan['nama_lengkap']) ?>
                             </option>
+
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </select>

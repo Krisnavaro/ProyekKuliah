@@ -175,48 +175,50 @@
     </div>
   </div>
 
-  <div class="modal fade login-form-modal" id="loginFormModal" tabindex="-1" aria-labelledby="loginFormModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="loginFormModalLabel">Login ke DJAYA ASPALT</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body text-center">
-            <img src="<?= base_url('assets/logo.png') ?>" alt="Logo" width="180px" class="mb-3">
-            <h5 class="fw-bold mb-3">Login</h5>
-            <div id="loginErrorAlert" class="alert alert-danger" style="display:none;"></div>
-            <form action="<?= base_url('login') ?>" method="post">
-                <div class="mb-3">
-                    <input type="text" class="form-control" name="username" placeholder="Username atau Email" required>
-                </div>
-                <div class="mb-3">
-                    <input type="password" class="form-control" name="password" placeholder="Password" required>
-                </div>
-                <button type="submit" class="btn btn-primary w-100">LOGIN</button>
-            </form>
-            <div class="mt-3 d-flex justify-content-between">
-                <a href="#" id="redirectToRegister" class="text-decoration-none">&lt; REGISTER</a>
-                <a href="#" class="text-decoration-none">Don't remember password?</a>
-            </div>
+  <?php if (!session()->get('logged_in')): ?>
+    <div class="modal fade login-form-modal" id="loginFormModal" tabindex="-1" aria-labelledby="loginFormModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="loginFormModalLabel">Login ke DJAYA ASPALT</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body text-center">
+              <img src="<?= base_url('assets/logo.png') ?>" alt="Logo" width="180px" class="mb-3">
+              <h5 class="fw-bold mb-3">Login</h5>
+              <div id="loginErrorAlert" class="alert alert-danger" style="display:none;"></div>
+              <form action="<?= base_url('login') ?>" method="post">
+                  <div class="mb-3">
+                      <input type="text" class="form-control" name="username" placeholder="Username atau Email" required>
+                  </div>
+                  <div class="mb-3">
+                      <input type="password" class="form-control" name="password" placeholder="Password" required>
+                  </div>
+                  <button type="submit" class="btn btn-primary w-100">LOGIN</button>
+              </form>
+              <div class="mt-3 d-flex justify-content-between">
+                  <a href="#" id="redirectToRegister" class="text-decoration-none">&lt; REGISTER</a>
+                  <a href="#" class="text-decoration-none">Don't remember password?</a>
+              </div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+          const loginOrProfileIcon = document.getElementById('loginOrProfileIcon');
+          
+          if (loginOrProfileIcon) {
+              const loginModal = new bootstrap.Modal(document.getElementById('loginFormModal'));
+              loginOrProfileIcon.addEventListener('click', function() {
+                  loginModal.show();
+              });
+          }
+      });
+    </script>
+  <?php endif; ?>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const loginOrProfileIcon = document.getElementById('loginOrProfileIcon');
-        
-        // Hanya tambahkan event listener jika ikon login ada (artinya user belum login)
-        if (loginOrProfileIcon) {
-            const loginModal = new bootstrap.Modal(document.getElementById('loginFormModal'));
-            loginOrProfileIcon.addEventListener('click', function() {
-                loginModal.show();
-            });
-        }
-    });
-  </script>
+
 </body>
 </html>

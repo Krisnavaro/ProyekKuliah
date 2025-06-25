@@ -10,7 +10,7 @@ use CodeIgniter\Router\RouteCollection;
 // RUTE HALAMAN PUBLIK & OTENTIKASI
 // ===================================================================
 $routes->get('/', 'Pages::splashScreen');
-$routes->get('login', 'Login::showLoginForm');
+$routes->get('login', 'Login::index');
 $routes->post('login', 'Login::login');
 $routes->get('logout', 'Login::logout');
 $routes->get('dashboard', 'Pages::dashboard');

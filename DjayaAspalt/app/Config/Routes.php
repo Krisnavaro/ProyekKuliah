@@ -50,7 +50,10 @@ $routes->group('admin', ['filter' => 'auth:admin'], function($routes) {
     $routes->get('pelaksanaan/hapus/(:any)', 'Admin::hapusPelaksanaan/$1');
 
     // Manajemen Pemesanan
+    $routes->get('pemesanan', 'Admin::dataPemesanan');
     $routes->get('pemesanan/edit/(:any)', 'Admin::editPemesanan/$1');
+    $routes->post('pemesanan/simpan', 'Admin::simpanPemesanan');
+    $routes->get('pemesanan/tambah', 'Admin::tambahPemesanan');
     $routes->post('pemesanan/update/(:any)', 'Admin::updatePemesanan/$1');
     $routes->get('pemesanan/hapus/(:any)', 'Admin::hapusPemesanan/$1');
 
@@ -58,23 +61,31 @@ $routes->group('admin', ['filter' => 'auth:admin'], function($routes) {
     $routes->get('penyewaan', 'Admin::dataPenyewaan');
     $routes->get('penyewaan/tambah', 'Admin::tambahPenyewaan');
     $routes->post('penyewaan/simpan', 'Admin::simpanPenyewaan');
-    $routes->get('penyewaan/view/(:any)', 'Admin::viewPenyewaan/$1');   // <-- TAMBAHKAN INI
-    $routes->get('penyewaan/edit/(:any)', 'Admin::editPenyewaan/$1');   // <-- TAMBAHKAN INI
-    $routes->post('penyewaan/update/(:any)', 'Admin::updatePenyewaan/$1'); // <-- TAMBAHKAN INI
-    $routes->get('penyewaan/hapus/(:any)', 'Admin::hapusPenyewaan/$1');   // <-- TAMBAHKAN INI
+    $routes->get('penyewaan/view/(:any)', 'Admin::viewPenyewaan/$1');  
+    $routes->get('penyewaan/edit/(:any)', 'Admin::editPenyewaan/$1');  
+    $routes->post('penyewaan/update/(:any)', 'Admin::updatePenyewaan/$1');
+    $routes->get('penyewaan/hapus/(:any)', 'Admin::hapusPenyewaan/$1');  
     // ... rute untuk CRUD penyewaan lainnya akan menyusul
 
     // Manajemen Alat
     $routes->get('alat', 'Admin::dataAlat');
-    // ... rute untuk CRUD alat bisa ditambahkan di sini
+    $routes->get('alat/tambah', 'Admin::tambahAlat');
+    $routes->post('alat/simpan', 'Admin::simpanAlat');
+    $routes->get('alat/edit/(:any)', 'Admin::editAlat/$1');
+    $routes->post('alat/update/(:any)', 'Admin::updateAlat/$1');
+    $routes->get('alat/hapus/(:any)', 'Admin::hapusAlat/$1');
 
     // Manajemen Pembayaran
     $routes->get('pembayaran', 'Admin::dataPembayaran');
-    // ... rute untuk CRUD pembayaran bisa ditambahkan di sini
+    $routes->get('pembayaran/tambah', 'Admin::tambahPembayaran');
+    $routes->post('pembayaran/simpan', 'Admin::simpanPembayaran');
+    $routes->get('pembayaran/hapus/(:any)', 'Admin::hapusPembayaran/$1');
 
     // Manajemen Pengembalian
     $routes->get('pengembalian', 'Admin::dataPengembalian');
-    // ... rute untuk CRUD pengembalian bisa ditambahkan di sini
+    $routes->get('pengembalian/tambah', 'Admin::tambahPengembalian');
+    $routes->post('pengembalian/simpan', 'Admin::simpanPengembalian');
+    $routes->get('pengembalian/hapus/(:any)', 'Admin::hapusPengembalian/$1');
 
     // Profil Admin
     $routes->get('profile', 'Admin::adminProfile');

@@ -15,7 +15,7 @@ class PemesananModel extends Model
 
     // Daftarkan 'id_pesanan' sebagai kolom yang boleh diisi
     protected $allowedFields    = [
-        'id_pesanan', // <-- INI KUNCINYA
+        'id_pesanan',
         'id_pelaksanaan',
         'nama_paketdipesan',
         'harga_paketdipesan',
@@ -26,9 +26,11 @@ class PemesananModel extends Model
      * Mengambil semua data pemesanan dengan menggabungkan data pelanggan (users).
      * pemesanan -> pelaksanaan -> users
      */
+
+    
     public function getPemesananWithDetails()
     {
-        return $this->select('pemesanan.*, users.nama_lengkap, pelaksanaan.alamat_pelaksanaan')
+        return $this->select('pemesanan.*, users.nama_lengkap')
                     ->join('pelaksanaan', 'pelaksanaan.id_pelaksanaan = pemesanan.id_pelaksanaan', 'left')
                     ->join('users', 'users.id = pelaksanaan.id_pelanggan', 'left')
                     ->findAll();

@@ -10,24 +10,31 @@
             <?= csrf_field() ?>
             
             <div class="mb-3">
-                <label for="id_namasewa" class="form-label">ID Nama Sewa (Opsional)</label>
-                <input type="text" class="form-control" id="id_namasewa" name="id_namasewa" placeholder="Contoh: Sewa230625001. Jika diisi, ID Survey tidak akan dibuat.">
+                <label for="tujuan" class="form-label fw-bold">Tujuan Pendaftaran</label>
+                <select class="form-select" id="tujuan" name="tujuan" required>
+                    <option value="" selected disabled>-- Pilih Tujuan --</option>
+                    <option value="survey">Untuk Kebutuhan Survey</option>
+                    <option value="sewa">Untuk Kebutuhan Sewa</option>
+                </select>
+                <small class="form-text text-muted">ID Survey atau ID Sewa akan dibuat otomatis berdasarkan pilihan ini.</small>
             </div>
+
             <div class="mb-3">
                 <label for="nama_lengkap" class="form-label">Nama Lengkap</label>
-                <input type="text" class="form-control" id="nama_lengkap" name="nama_lengkap" required>
+                <input type="text" class="form-control" id="nama_lengkap" name="nama_lengkap" required placeholder="Masukkan nama lengkap pelanggan">
             </div>
             <div class="mb-3">
                 <label for="no_telpon" class="form-label">No. Telepon</label>
-                <input type="tel" class="form-control" id="no_telpon" name="no_telpon" required>
+                <input type="tel" class="form-control" id="no_telpon" name="no_telpon" required placeholder="Contoh: 081234567890">
+            </div>
+
+            <div class="mb-3">
+                <label for="email" class="form-label">Alamat Email</label>
+                <input type="email" class="form-control" id="email" name="email" required placeholder="Contoh: pelanggan@email.com">
             </div>
             <div class="mb-3">
-                <label for="tanggal_survey" class="form-label">Tanggal Survey</label>
-                <input type="date" class="form-control" id="tanggal_survey" name="tanggal_survey" required>
-            </div>
-            <div class="mb-3">
-                <label for="lokasi_survey" class="form-label">Lokasi Survey / Pengiriman</label>
-                <textarea class="form-control" id="lokasi_survey" name="lokasi_survey" rows="3" required></textarea>
+                <label for="lokasi_survey" class="form-label">Alamat Lengkap</label>
+                <textarea class="form-control" id="lokasi_survey" name="lokasi_survey" rows="3" required placeholder="Masukkan alamat lengkap pelanggan"></textarea>
             </div>
 
             <div class="mt-4">

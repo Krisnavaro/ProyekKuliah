@@ -73,7 +73,8 @@ $routes->get('profile-perusahaan', 'Pages::profilePerusahaan');
     $routes->get('pemesanan/hapus/(:any)', 'Admin::hapusPemesanan/$1');
 
     // 4. Alat
-    $routes->get('alat', 'Admin::dataAlat');
+    $routes->get('alat-berat', 'Admin::dataAlatBerat'); // Rute baru untuk Alat Berat
+    $routes->get('material', 'Admin::dataMaterial');   // Rute baru untuk Material
     $routes->get('alat/tambah', 'Admin::tambahAlat');
     $routes->post('alat/simpan', 'Admin::simpanAlat');
     $routes->get('alat/edit/(:any)', 'Admin::editAlat/$1');

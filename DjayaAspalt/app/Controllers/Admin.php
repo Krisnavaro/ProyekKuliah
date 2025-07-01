@@ -290,11 +290,28 @@ class Admin extends BaseController
     // ===================================================================
     // 4. MANAJEMEN ALAT (CEK ALAT)
     // ===================================================================
-    public function dataAlat()
+    // UBAH FUNGSI INI (dari dataAlat menjadi dataAlatBerat)
+    public function dataAlatBerat()
     {
         $model = new AlatModel();
-        $data = ['page_title' => 'Manajemen Data Alat', 'alat_list'  => $model->findAll()];
-        return view('admin/alat', $data);
+        $data = [
+            'page_title' => 'Manajemen Alat Berat',
+            // Filter hanya untuk 'Alat Berat'
+            'alat_list'  => $model->where('kategori', 'Alat Berat')->findAll()
+        ];
+        return view('admin/alat', $data); // Kita tetap pakai view 'alat.php'
+    }
+
+    // TAMBAHKAN FUNGSI BARU INI
+    public function dataMaterial()
+    {
+        $model = new AlatModel();
+        $data = [
+            'page_title' => 'Manajemen Material',
+            // Filter hanya untuk 'Material'
+            'alat_list'  => $model->where('kategori', 'Material')->findAll()
+        ];
+        return view('admin/alat', $data); // Kita juga pakai view 'alat.php' yang sama
     }
 
     public function tambahAlat()
@@ -310,39 +327,48 @@ class Admin extends BaseController
     public function simpanAlat()
     {
         $alatModel = new \App\Models\AlatModel();
-        $mode = $this->request->getPost('mode');
-
-        // LOGIKA JIKA "UPDATE STOK"
-        if ($mode === 'update') {
-            $id_alat = $this->request->getPost('id_alat_lama');
-            $tambah_stok = (int)$this->request->getPost('tambah_stok');
-
-            $item = $alatModel->find($id_alat);
-            if ($item && $tambah_stok != 0) {
-                $stok_baru = $item['stok_alat'] + $tambah_stok;
-                $alatModel->update($id_alat, ['stok_alat' => $stok_baru]);
-                session()->setFlashdata('success', 'Stok untuk ' . $item['nama_alat'] . ' berhasil diperbarui.');
-            } else {
-                session()->setFlashdata('error', 'Gagal memperbarui stok.');
-            }
-            return redirect()->to('admin/stok'); 
-        }
         
-        // LOGIKA JIKA "BUAT BARU"
-        elseif ($mode === 'baru') {
-            $data = $this->request->getPost();
-            $gambar = $this->request->getFile('gambar_alat');
-            if ($gambar && $gambar->isValid() && !$gambar->hasMoved()) {
-                $newName = $gambar->getRandomName();
-                $gambar->move(FCPATH . 'uploads/alat', $newName);
-                $data['gambar_alat'] = $newName;
-            }
-            $alatModel->save($data);
-            session()->setFlashdata('success', 'Item baru berhasil ditambahkan.');
-            return redirect()->to('admin/stok'); 
+        // Validasi dasar, bisa Anda kembangkan lebih lanjut
+        $rules = [
+            'id_alat'   => 'required|is_unique[alat.id_alat]',
+            'nama_alat' => 'required',
+            'kategori'  => 'required',
+            'stok_alat' => 'required|numeric'
+        ];
+
+        if (!$this->validate($rules)) {
+            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
-        return redirect()->back()->with('error', 'Terjadi kesalahan.');
+        $data = [
+            'id_alat'        => $this->request->getPost('id_alat'),
+            'cek_alat'       => $this->request->getPost('cek_alat'),
+            'nama_alat'      => $this->request->getPost('nama_alat'),
+            'kategori'       => $this->request->getPost('kategori'),
+            'stok_alat'      => $this->request->getPost('stok_alat'),
+            'informasi_alat' => $this->request->getPost('informasi_alat'),
+            'harga_sewa'     => $this->request->getPost('harga_sewa'),
+        ];
+
+        // Logika upload gambar
+        $gambar = $this->request->getFile('gambar_alat');
+        if ($gambar && $gambar->isValid() && !$gambar->hasMoved()) {
+            $newName = $gambar->getRandomName();
+            $gambar->move(FCPATH . 'uploads/alat', $newName);
+            $data['gambar_alat'] = $newName;
+        }
+
+        // Simpan ke database
+        $alatModel->save($data);
+        session()->setFlashdata('success', 'Data baru berhasil ditambahkan.');
+
+        // **REVISI UTAMA DI SINI**
+        // Redirect berdasarkan kategori yang dipilih
+        if ($this->request->getPost('kategori') === 'Material') {
+            return redirect()->to('admin/material');
+        } else {
+            return redirect()->to('admin/alat-berat');
+        }
     }
 
     public function editAlat($id)

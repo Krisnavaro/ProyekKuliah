@@ -7,6 +7,8 @@
         <form action="<?= base_url('admin/alat/simpan') ?>" method="post" enctype="multipart/form-data">
             <?= csrf_field() ?>
             
+            <input type="hidden" name="mode" value="baru">
+
             <div class="mb-3">
                 <label for="kategori" class="form-label fw-bold">Pilih Kategori</label>
                 <select name="kategori" id="kategori" class="form-select" required>

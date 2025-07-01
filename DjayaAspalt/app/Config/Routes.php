@@ -31,6 +31,13 @@ $routes->get('profile-perusahaan', 'Pages::profilePerusahaan');
     // Dashboard Admin
     $routes->get('/', 'Admin::index', ['as' => 'admin_dashboard']);
     $routes->get('cek-stok', 'Admin::cekStokAlat');
+    $routes->get('cek-stok', 'Admin::cekStokMaterial');
+    // di dalam $routes->group('admin', ...);
+    $routes->get('alat/stok', 'Admin::cekStokAlatBerat');
+
+    // di dalam $routes->group('admin', ...);
+    $routes->get('api/pemesanan/(:any)', 'Admin::api_getPemesananDetail/$1');
+    $routes->get('api/penyewaan/(:any)', 'Admin::api_getPenyewaanDetail/$1');
 
      // 1. Pendaftaran & Manajemen Pelanggan
     $routes->get('pelanggan', 'Admin::manajemenPengguna');
@@ -42,12 +49,20 @@ $routes->get('profile-perusahaan', 'Pages::profilePerusahaan');
     $routes->get('pelanggan/view/(:any)', 'Admin::viewPelanggan/$1');
     
     // 2. Survey & Pelaksanaan (Dikembalikan)
-    $routes->get('pelaksanaan', 'Admin::dataPelaksanaan');
-    $routes->get('pelaksanaan/tambah', 'Admin::tambahPelaksanaan');
-    $routes->post('pelaksanaan/simpan', 'Admin::simpanPelaksanaan');
-    $routes->get('pelaksanaan/edit/(:any)', 'Admin::editPelaksanaan/$1');
-    $routes->post('pelaksanaan/update/(:any)', 'Admin::updatePelaksanaan/$1');
-    $routes->get('pelaksanaan/hapus/(:any)', 'Admin::hapusPelaksanaan/$1');
+   // $routes->get('pelaksanaan', 'Admin::dataPelaksanaan');
+   // $routes->get('pelaksanaan/tambah', 'Admin::tambahPelaksanaan');
+   // $routes->post('pelaksanaan/simpan', 'Admin::simpanPelaksanaan');
+   // $routes->get('pelaksanaan/edit/(:any)', 'Admin::editPelaksanaan/$1');
+    //$routes->post('pelaksanaan/update/(:any)', 'Admin::updatePelaksanaan/$1');
+   // $routes->get('pelaksanaan/hapus/(:any)', 'Admin::hapusPelaksanaan/$1');
+
+    // --- RUTE UNTUK MANAJEMEN SURVEY ---
+    $routes->get('survey', 'Admin::dataSurvey');
+    $routes->get('survey/tambah', 'Admin::tambahSurvey');
+    $routes->post('survey/simpan', 'Admin::simpanSurvey');
+    $routes->get('survey/edit/(:num)', 'Admin::editSurvey/$1');
+    $routes->post('survey/update/(:num)', 'Admin::updateSurvey/$1');
+    $routes->get('survey/hapus/(:num)', 'Admin::hapusSurvey/$1');
 
     // 3. Pemesanan
     $routes->get('pemesanan', 'Admin::dataPemesanan');
@@ -99,12 +114,21 @@ $routes->get('profile-perusahaan', 'Pages::profilePerusahaan');
     // Profil Admin
     $routes->get('profile', 'Admin::adminProfile');
     $routes->get('profile/edit', 'Admin::editAdminProfile');
+    $routes->get('paket/tambah', 'Admin::tambahPaket');
+    $routes->get('paket/hapus/(:num)', 'Admin::hapusPaket/$1');
+    $routes->get('paket/edit/(:num)', 'Admin::editPaket/$1');
+    $routes->get('cek-stok/alat-berat', 'Admin::cekStokAlatBerat');
+    $routes->get('cek-stok/material', 'Admin::cekStokMaterial');
+    $routes->get('pembayaran/bukti/lihat/(:any)', 'Admin::lihatBukti/$1');
     $routes->post('profile/update', 'Admin::updateAdminProfile');
+    $routes->post('paket/simpan', 'Admin::simpanPaket');
+    $routes->post('paket/update/(:num)', 'Admin::updatePaket/$1');
 
     // Rute untuk halaman Cek Paket, Stok, dan Pekerja
-    $routes->get('cek_paket', 'Admin::cek_paket');
-    $routes->get('cek_stok', 'Admin::cek_stok');
-    $routes->get('cek_pekerja', 'Admin::cek_pekerja');
+    $routes->get('cek-paket', 'Admin::cek_paket');
+    $routes->get('cek-stok', 'Admin::cekStokMaterial'); // Menggunakan fungsi yang sudah kita buat
+    $routes->get('cek-pekerja', 'Admin::cek_pekerja');
+    $routes->get('cek-pekerja-detail/(:segment)', 'Admin::cek_pekerja_detail/$1'); // Rute untuk detail pekerja
 });
 
 

@@ -49,19 +49,26 @@
                             <td><?= esc($item['id_pelanggan']) ?></td>
                             <td><?= esc($item['nama_lengkap']) ?></td>
                             <td>
-                                <?php if (!empty($item['id_survey'])): ?>
-                                    <span class="badge bg-info">Survey</span>
-                                <?php elseif (!empty($item['id_namasewa'])): ?>
-                                    <span class="badge bg-warning">Sewa</span>
-                                <?php else: ?>
-                                    -
-                                <?php endif; ?>
+                                <?php 
+                                    $tujuanDitemukan = false;
+                                    if (!empty($item['id_survey'])) {
+                                        echo '<span class="badge bg-info">Survey</span> ';
+                                        $tujuanDitemukan = true;
+                                    }
+                                    if (!empty($item['id_sewa'])) {
+                                        echo '<span class="badge bg-warning text-dark">Sewa</span>';
+                                        $tujuanDitemukan = true;
+                                    }
+                                    if (!$tujuanDitemukan) {
+                                        echo '-';
+                                    }
+                                ?>
                             </td>
-                            <td><?= date('d M Y, H:i', strtotime($item['tanggal_survey'])) ?></td>
+                            <td><?= date('d M Y, H:i', strtotime($item['created_at'])) ?></td>
                             <td class="action-buttons">
-                                <a href="<?= base_url('admin/pelanggan/view/' . $item['id_pelanggan']) ?>" class="btn btn-dark btn-sm" title="Lihat Detail">View</a>
-                                <a href="<?= base_url('admin/pelanggan/edit/' . $item['id_pelanggan']) ?>" class="btn btn-warning btn-sm" title="Edit Data">Edit</a>
-                                <a href="<?= base_url('admin/pelanggan/hapus/' . $item['id_pelanggan']) ?>" class="btn btn-danger btn-sm" title="Hapus Data" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">Delete</a>
+                                <a href="<?= base_url('admin/pelanggan/view/' . $item['id_pelanggan']) ?>" class="btn btn-dark btn-sm" title="Lihat Detail">Lihat</a>
+                                <a href="<?= base_url('admin/pelanggan/edit/' . $item['id_pelanggan']) ?>" class="btn btn-warning btn-sm" title="Ubah Data">Ubah</a>
+                                <a href="<?= base_url('admin/pelanggan/hapus/' . $item['id_pelanggan']) ?>" class="btn btn-danger btn-sm" title="Hapus Data" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">Hapus</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>

@@ -10,16 +10,8 @@ class PelangganModel extends Model
     protected $primaryKey       = 'id_pelanggan';
     protected $useAutoIncrement = false;
     protected $returnType       = 'array';
-    protected $allowedFields    = [
-        'id_pelanggan',
-        'id_survey',
-        'id_namasewa',
-        'nama_lengkap',
-        'no_telpon',
-        'email',
-        'tanggal_survey',
-        'lokasi_survey'
-    ];
+    protected $allowedFields    = ['id_pelanggan', 'nama_lengkap', 'alamat', 'no_telpon', 'email', 'id_user'];
+    protected $useTimestamps = true;
 
     /**
      * Fungsi untuk membuat ID transaksional (Survey/Sewa) secara otomatis

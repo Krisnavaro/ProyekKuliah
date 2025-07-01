@@ -2,8 +2,9 @@
 
 namespace App\Controllers;
 
+
+use App\Models\SurveyModel;
 use App\Models\AlatModel;
-use App\Models\PelaksanaanModel;
 use App\Models\PelangganModel;
 use App\Models\PembayaranModel;
 use App\Models\PemesananModel;
@@ -47,11 +48,101 @@ class Admin extends BaseController
     public function manajemenPengguna()
     {
         $model = new PelangganModel();
+
+        // Query untuk menggabungkan data pelanggan dengan survey dan penyewaan
+        $pelangganData = $model->select('pelanggan.*, survey.id_survey, sewa.id_sewa')
+                            ->join('surveys as survey', 'survey.id_pelanggan = pelanggan.id_pelanggan', 'left')
+                            ->join('penyewaan as sewa', 'sewa.id_namasewa = pelanggan.id_pelanggan', 'left')
+                            ->groupBy('pelanggan.id_pelanggan') // Menghindari duplikat
+                            ->orderBy('pelanggan.created_at', 'DESC')
+                            ->findAll();
+
         $data = [
             'page_title' => 'Manajemen Pelanggan',
-            'pelanggan_per_bulan' => $this->groupDataByMonth($model->orderBy('tanggal_survey', 'DESC')->findAll(), 'tanggal_survey')
+            'pelanggan_per_bulan' => $this->groupDataByMonth($pelangganData, 'created_at')
         ];
+        
         return view('admin/manajemen_pengguna', $data);
+    }
+
+     public function dataSurvey()
+    {
+        $surveyModel = new SurveyModel();
+        
+        $surveys = $surveyModel->getSurveysWithDetails();
+
+        $data = [
+            'page_title' => 'Manajemen Survey',
+            'survey_per_bulan' => $this->groupDataByMonth($surveys, 'tanggal_survey')
+        ];
+        
+        return view('admin/survey', $data);
+    }
+
+    public function tambahSurvey()
+    {
+        $pelangganModel = new PelangganModel();
+        $data = [
+            'page_title' => 'Tambah Survey Baru',
+            'pelanggan_list' => $pelangganModel->findAll()
+        ];
+        return view('admin/tambah_survey', $data);
+    }
+
+    public function simpanSurvey()
+    {
+        $surveyModel = new SurveyModel();
+        $data = [
+            'id_pelanggan'   => $this->request->getPost('id_pelanggan'),
+            'alamat_survey'  => $this->request->getPost('alamat_survey'),
+            'tanggal_survey' => $this->request->getPost('tanggal_survey'),
+            'status'         => 'Dijadwalkan'
+        ];
+
+        if ($surveyModel->insert($data)) {
+            return redirect()->to('/admin/survey')->with('success', 'Data survey berhasil ditambahkan.');
+        } else {
+            return redirect()->back()->withInput()->with('error', 'Gagal menambahkan data survey.');
+        }
+    }
+
+    public function editSurvey($id)
+    {
+        $surveyModel = new SurveyModel();
+        $pelangganModel = new PelangganModel();
+        $data = [
+            'page_title' => 'Edit Data Survey',
+            'survey' => $surveyModel->find($id),
+            'pelanggan_list' => $pelangganModel->findAll()
+        ];
+        return view('admin/edit_survey', $data);
+    }
+
+    public function updateSurvey($id)
+    {
+        $surveyModel = new SurveyModel();
+        $data = [
+            'id_pelanggan'   => $this->request->getPost('id_pelanggan'),
+            'alamat_survey'  => $this->request->getPost('alamat_survey'),
+            'tanggal_survey' => $this->request->getPost('tanggal_survey'),
+            'status'         => $this->request->getPost('status')
+        ];
+
+        if ($surveyModel->update($id, $data)) {
+            return redirect()->to('/admin/survey')->with('success', 'Data survey berhasil diperbarui.');
+        } else {
+            return redirect()->back()->withInput()->with('error', 'Gagal memperbarui data survey.');
+        }
+    }
+
+    public function hapusSurvey($id)
+    {
+        $surveyModel = new SurveyModel();
+        if ($surveyModel->delete($id)) {
+            return redirect()->to('/admin/survey')->with('success', 'Data survey berhasil dihapus.');
+        } else {
+            return redirect()->to('/admin/survey')->with('error', 'Gagal menghapus data survey.');
+        }
     }
 
     public function tambahPelanggan()
@@ -121,122 +212,32 @@ class Admin extends BaseController
         $data = ['page_title' => 'Detail Pelanggan', 'pelanggan'  => $model->find($id)];
         return view('admin/view_pelanggan', $data);
     }
-
-    // ===================================================================
-    // 2. SURVEY LOKASI & 3. PEMESANAN (Struktur dari file lama Anda)
-    // ===================================================================
-    public function dataPelaksanaan()
-    {
-        $model = new PelaksanaanModel();
-        $data = [
-            'page_title' => 'Data Pelaksanaan',
-            'pelaksanaan_per_bulan' => $this->groupDataByMonth($model->orderBy('tanggal_pelaksanaan', 'DESC')->findAll(), 'tanggal_pelaksanaan')
-        ];
-        return view('admin/pelaksanaan', $data);
-    }
-
-    public function tambahPelaksanaan()
-    {
-        $pelangganModel = new PelangganModel();
-        $data = ['page_title' => 'Tambah Data Pelaksanaan', 'pelanggan_list' => $pelangganModel->findAll()];
-        return view('admin/tambah_pelaksanaan', $data);
-    }
-
-    public function simpanPelaksanaan()
-    {
-        $model = new PelaksanaanModel();
-        $data = $this->request->getPost();
-
-        // 1. Ambil tanggal dari form input
-        $tanggalInput = $this->request->getPost('tanggal_pelaksanaan');
-        
-        // 2. Ambil hanya bagian tanggal (YYYY-MM-DD) untuk query
-        $tanggalUntukQuery = date('Y-m-d', strtotime($tanggalInput));
-
-        // 3. Hitung berapa banyak pelaksanaan yang sudah ada di tanggal tersebut
-        $jumlahHariIni = $model->where('DATE(tanggal_pelaksanaan)', $tanggalUntukQuery)->countAllResults();
-
-        // 4. Buat nomor urut berikutnya (jumlah + 1) dengan format 2 digit (01, 02, dst)
-        $nomorUrut = str_pad($jumlahHariIni + 1, 2, '0', STR_PAD_LEFT);
-        
-        // 5. Format tanggal menjadi ddmmyyyy sesuai Figma
-        $formatTanggalFigma = date('dmY', strtotime($tanggalInput));
-
-        // 6. Gabungkan semua menjadi ID baru
-        $data['id_pelaksanaan'] = 'Pelaksanaan' . $formatTanggalFigma . $nomorUrut;
-
-        // Simpan data ke database
-        $model->save($data);
-        session()->setFlashdata('success', 'Data pelaksanaan dengan ID baru berhasil ditambahkan.');
-
-        return redirect()->to('admin/pelaksanaan');
-    }
-
-    public function editPelaksanaan($id)
-    {
-        $model = new PelaksanaanModel();
-        $pelangganModel = new PelangganModel();
-        $data = ['page_title' => 'Edit Data Pelaksanaan', 'pelaksanaan' => $model->find($id), 'pelanggan_list' => $pelangganModel->findAll()];
-        return view('admin/edit_pelaksanaan', $data);
-    }
-
-    public function updatePelaksanaan($id)
-{
-    // 1. Siapkan kedua model yang akan digunakan
-    $pelaksanaanModel = new PelaksanaanModel();
-    $pemesananModel = new PemesananModel();
-
-    // 2. Ambil semua data dari form yang disubmit
-    $data = $this->request->getPost();
-
-    // 3. Lakukan update pada tabel 'pelaksanaan' seperti biasa
-    if ($pelaksanaanModel->update($id, $data)) {
-        
-        // --- PROSES SINKRONISASI DIMULAI DI SINI ---
-        
-        // 4. Ambil tanggal baru yang diinput dari form
-        $tanggalBaru = $data['tanggal_pelaksanaan'];
-
-        // 5. Cari semua baris di tabel 'pemesanan' yang memiliki 'id_pelaksanaan' yang sama,
-        //    lalu update kolom 'tanggal_pemesanan' mereka dengan tanggal baru.
-        $pemesananModel->where('id_pelaksanaan', $id)
-                       ->set('tanggal_pemesanan', $tanggalBaru)
-                       ->update();
-
-        // 6. Set pesan sukses
-        session()->setFlashdata('success', 'Data pelaksanaan dan pemesanan terkait berhasil disinkronkan.');
-
-    } else {
-        // Jika update pertama gagal, set pesan error
-        session()->setFlashdata('error', 'Gagal memperbarui data pelaksanaan.');
-    }
-
-    // 7. Kembali ke halaman daftar pelaksanaan
-    return redirect()->to('admin/pelaksanaan');
-}
-
-    public function hapusPelaksanaan($id)
-    {
-        $model = new PelaksanaanModel();
-        $model->delete($id);
-        session()->setFlashdata('success', 'Data pelaksanaan berhasil dihapus.');
-        return redirect()->to('admin/pelaksanaan');
-    }
     
     public function dataPemesanan()
     {
         $model = new PemesananModel();
+
+        // Query baru dengan JOIN
+        $pemesananData = $model->select('pemesanan.*, pelanggan.nama_lengkap')
+                            ->join('pelanggan', 'pelanggan.id_pelanggan = pemesanan.id_pelanggan', 'left')
+                            ->orderBy('pemesanan.tanggal_pemesanan', 'DESC')
+                            ->findAll();
+
         $data = [
             'page_title' => 'Data Pemesanan',
-            'pemesanan_per_bulan' => $this->groupDataByMonth($model->orderBy('tanggal_pemesanan', 'DESC')->findAll(), 'tanggal_pemesanan')
+            'pemesanan_per_bulan' => $this->groupDataByMonth($pemesananData, 'tanggal_pemesanan')
         ];
         return view('admin/pemesanan', $data);
     }
 
+   // di file app/Controllers/Admin.php
     public function tambahPemesanan()
     {
-        $model = new PelaksanaanModel();
-        $data = ['page_title' => 'Tambah Pemesanan', 'pelaksanaan_list' => $model->findAll()];
+        $pelangganModel = new PelangganModel(); // Tambahkan ini
+        $data = [
+            'page_title' => 'Tambah Pemesanan',
+            'pelanggan_list' => $pelangganModel->findAll() // Tambahkan ini
+        ];
         return view('admin/tambah_pemesanan', $data);
     }
 
@@ -253,8 +254,20 @@ class Admin extends BaseController
     public function editPemesanan($id)
     {
         $pemesananModel = new PemesananModel();
-        $pelaksanaanModel = new PelaksanaanModel();
-        $data = ['page_title' => 'Edit Pemesanan', 'pemesanan' => $pemesananModel->find($id), 'pelaksanaan_list' => $pelaksanaanModel->findAll()];
+        $pelangganModel = new PelangganModel(); // Tambahkan ini
+
+        $pemesanan = $pemesananModel->find($id);
+
+        if (empty($pemesanan)) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException('Data pemesanan tidak ditemukan: ' . $id);
+        }
+
+        $data = [
+            'page_title'     => 'Edit Data Pemesanan',
+            'pemesanan'      => $pemesanan,
+            'pelanggan_list' => $pelangganModel->findAll() // Tambahkan ini untuk mengirim daftar pelanggan
+        ];
+        
         return view('admin/edit_pemesanan', $data);
     }
 
@@ -286,28 +299,51 @@ class Admin extends BaseController
 
     public function tambahAlat()
     {
-        $data = ['page_title' => 'Tambah Alat Baru', 'validation' => \Config\Services::validation()];
+        $alatModel = new \App\Models\AlatModel();
+        $data = [
+            'page_title' => 'Tambah Data / Update Stok',
+            'alat_list'  => $alatModel->findAll() // Mengirim daftar alat ke view
+        ];
         return view('admin/tambah_alat', $data);
     }
 
     public function simpanAlat()
-{
-    // ... (kode validasi Anda)
+    {
+        $alatModel = new \App\Models\AlatModel();
+        $mode = $this->request->getPost('mode');
 
-    $model = new AlatModel();
-    $data = $this->request->getPost();
+        // LOGIKA JIKA "UPDATE STOK"
+        if ($mode === 'update') {
+            $id_alat = $this->request->getPost('id_alat_lama');
+            $tambah_stok = (int)$this->request->getPost('tambah_stok');
 
-    $gambar = $this->request->getFile('gambar_alat');
-    if ($gambar && $gambar->isValid() && !$gambar->hasMoved()) {
-        $newName = $gambar->getRandomName();
-        $gambar->move(FCPATH . 'uploads/alat', $newName); // Pindahkan ke public/uploads/alat
-        $data['gambar_alat'] = $newName;
+            $item = $alatModel->find($id_alat);
+            if ($item && $tambah_stok != 0) {
+                $stok_baru = $item['stok_alat'] + $tambah_stok;
+                $alatModel->update($id_alat, ['stok_alat' => $stok_baru]);
+                session()->setFlashdata('success', 'Stok untuk ' . $item['nama_alat'] . ' berhasil diperbarui.');
+            } else {
+                session()->setFlashdata('error', 'Gagal memperbarui stok.');
+            }
+            return redirect()->to('admin/stok'); 
+        }
+        
+        // LOGIKA JIKA "BUAT BARU"
+        elseif ($mode === 'baru') {
+            $data = $this->request->getPost();
+            $gambar = $this->request->getFile('gambar_alat');
+            if ($gambar && $gambar->isValid() && !$gambar->hasMoved()) {
+                $newName = $gambar->getRandomName();
+                $gambar->move(FCPATH . 'uploads/alat', $newName);
+                $data['gambar_alat'] = $newName;
+            }
+            $alatModel->save($data);
+            session()->setFlashdata('success', 'Item baru berhasil ditambahkan.');
+            return redirect()->to('admin/stok'); 
+        }
+
+        return redirect()->back()->with('error', 'Terjadi kesalahan.');
     }
-
-    $model->save($data);
-    session()->setFlashdata('success', 'Data alat berhasil ditambahkan.');
-    return redirect()->to('/admin/alat');
-}
 
     public function editAlat($id)
     {
@@ -379,9 +415,8 @@ class Admin extends BaseController
 
         $data = [
             'page_title' => 'Tambah Data Penyewaan Baru',
-            // Ambil pelanggan yang mendaftar untuk 'Sewa'
-            'pelanggan_list' => $pelangganModel->where('id_namasewa IS NOT NULL')->where('id_namasewa !=', '')->findAll(),
-            // Ambil HANYA alat yang stoknya > 0 DAN statusnya 'Tersedia'
+            // SEKARANG MENGAMBIL SEMUA PELANGGAN, KARENA SEMUA BOLEH MENYEWA
+            'pelanggan_list' => $pelangganModel->findAll(),
             'alat_list' => $alatModel->where('stok_alat >', 0)->where('cek_alat', 'Tersedia')->findAll()
         ];
         
@@ -560,7 +595,7 @@ class Admin extends BaseController
     {
         $model = new PengembalianModel();
         $data = ['page_title' => 'Data Pengembalian', 'pengembalian_list' => $model->getPengembalianWithDetails()];
-        return view('admin/pengembalian_data', $data);
+        return view('admin/pengembalian', $data);
     }
 
     public function tambahPengembalian()
@@ -663,7 +698,30 @@ class Admin extends BaseController
             'page_title' => 'Cek Stok Alat',
             'alat_list'  => $model->findAll()
         ];
-        return view('admin/cek_stok_alat', $data); // Menggunakan view yang sudah ada
+        return view('admin/cek_stok_alat', $data);
+    }
+
+    // Fungsi untuk menampilkan stok MATERIAL
+    public function cekStokMaterial()
+    {
+        $model = new \App\Models\AlatModel();
+        $data = [
+            'page_title' => 'Cek Stok Material',
+            // UBAH NAMA VARIABEL DI BARIS INI
+            'material_list'  => $model->where('kategori', 'Material')->findAll()
+        ];
+        // Pastikan nama file view sudah benar
+        return view('admin/cek_stok_material', $data);
+    }
+
+    public function cekStokAlatBerat()
+    {
+        $model = new AlatModel();
+        $data = [
+            'page_title' => 'Cek Stok Alat Berat',
+            'alat_list'  => $model->where('kategori', 'Alat Berat')->findAll()
+        ];
+        return view('admin/cek_stok_alat_berat', $data);
     }
 
     // ===================================================================
@@ -672,11 +730,17 @@ class Admin extends BaseController
 
     public function cek_paket()
     {
-        $model = new PaketModel(); // Memanggil model Paket
+        // 1. Panggil PaketModel
+        $paketModel = new \App\Models\PaketModel();
+
+        // 2. Siapkan data untuk dikirim ke view
         $data = [
-            'page_title' => 'Daftar Paket Pengaspalan',
-            'paket_list' => $model->findAll() // Mengambil semua data dari tabel paket
+            'page_title' => 'Cek Ketersediaan Paket',
+            // 3. Ambil semua data dari tabel paket dan masukkan ke variabel 'pakets'
+            'pakets'     => $paketModel->findAll()
         ];
+
+        // 4. Kirim data ke view
         return view('admin/cek_paket', $data);
     }
 
@@ -692,11 +756,97 @@ class Admin extends BaseController
 
     public function cek_pekerja()
     {
-        $model = new PekerjaModel(); // Memanggil model Pekerja
+        $model = new \App\Models\PekerjaModel();
         $data = [
-            'page_title'   => 'Cek Status Pekerja',
-            'pekerja_list' => $model->findAll() // Mengambil semua data dari tabel pekerja
+            'page_title' => 'Cek Status Pekerja',
+            'pekerja' => [
+                'bekerja' => $model->where('status_pekerja', 'bekerja')->countAllResults(),
+                'tersedia' => $model->where('status_pekerja', 'tersedia')->countAllResults(),
+            ]
         ];
         return view('admin/cek_pekerja_status', $data);
+    }
+
+    public function api_getPemesananDetail($id)
+    {
+        $model = new PemesananModel();
+        $data = $model->find($id);
+        return $this->response->setJSON($data);
+    }
+
+    public function api_getPenyewaanDetail($id)
+    {
+        $model = new PenyewaanModel();
+        $data = $model->find($id);
+        return $this->response->setJSON($data);
+    }
+
+    public function testlayout()
+    {
+        return view('admin/test_view');
+    }
+
+    public function tambahPaket()
+    {
+        $data = [
+            'page_title' => 'Tambah Paket Baru'
+        ];
+        return view('admin/tambah_paket', $data);
+    }
+
+    // Method untuk menyimpan data paket baru ke database
+    public function simpanPaket()
+    {
+        $paketModel = new \App\Models\PaketModel();
+
+        $data = [
+            'nama_paket'      => $this->request->getPost('nama_paket'),
+            'deskripsi_paket' => $this->request->getPost('deskripsi_paket'),
+            'harga_paket'     => $this->request->getPost('harga_paket'),
+        ];
+
+        // Simpan data ke database
+        $paketModel->save($data);
+
+        // Arahkan kembali ke halaman cek paket dengan pesan sukses
+        return redirect()->to('admin/cek-paket')->with('success', 'Paket baru berhasil ditambahkan!');
+    }
+
+    public function hapusPaket($id = null)
+    {
+        $paketModel = new \App\Models\PaketModel();
+        if ($id) {
+            $paketModel->delete($id);
+        }
+        return redirect()->to('admin/cek-paket')->with('success', 'Paket berhasil dihapus.');
+    }
+
+    public function editPaket($id = null)
+    {
+        $paketModel = new \App\Models\PaketModel();
+        $data = [
+            'page_title' => 'Edit Paket',
+            'paket'      => $paketModel->find($id)
+        ];
+
+        if (empty($data['paket'])) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException('Paket tidak ditemukan.');
+        }
+
+        return view('admin/edit_paket', $data);
+    }
+
+    // Method untuk menyimpan perubahan dari form edit
+    public function updatePaket($id = null)
+    {
+        $paketModel = new \App\Models\PaketModel();
+        $data = [
+            'nama_paket'      => $this->request->getPost('nama_paket'),
+            'deskripsi_paket' => $this->request->getPost('deskripsi_paket'),
+            'harga_paket'     => $this->request->getPost('harga_paket'),
+        ];
+
+        $paketModel->update($id, $data);
+        return redirect()->to('admin/cek-paket')->with('success', 'Paket berhasil diperbarui.');
     }
 }

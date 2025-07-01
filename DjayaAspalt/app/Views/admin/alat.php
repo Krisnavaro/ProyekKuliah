@@ -1,4 +1,4 @@
-<?= $this->extend('layout/admin_kosong') ?>
+<?= $this->extend('layout/admin_alat') ?>
 <?= $this->section('content') ?>
 <style>
     .card-revisi { border-radius: 15px; background-color: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border: none; }
@@ -11,8 +11,8 @@
 </style>
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h4 class="fw-bold m-0"><?= esc($page_title ?? 'Data Alat') ?></h4>
-    <a href="<?= base_url('admin/alat/tambah') ?>" class="btn btn-success">Tambahkan Alat</a>
+    <h4 class="fw-bold m-0"><?= esc($page_title ?? 'Data Alat & Material') ?></h4>
+    <a href="<?= base_url('admin/alat/tambah') ?>" class="btn btn-success">Tambahkan Data Baru</a>
 </div>
 
 <?php if (session()->getFlashdata('success')): ?>
@@ -63,7 +63,7 @@
                             </td>
                             <td><?= esc($alat['stok_alat']) ?></td>
                             <td class="action-buttons">
-                                <a href="<?= base_url('admin/alat/edit/' . $alat['id_alat']) ?>" class="btn btn-warning btn-sm">Edit</a>
+                                <a href="<?= base_url('admin/alat/edit/' . $alat['id_alat']) ?>" class="btn btn-warning btn-sm">Ubah</a>
                                 <a href="<?= base_url('admin/alat/hapus/' . $alat['id_alat']) ?>" class="btn btn-danger btn-sm" onclick="return confirm('Anda yakin ingin menghapus alat ini?')">Hapus</a>
                             </td>
                         </tr>

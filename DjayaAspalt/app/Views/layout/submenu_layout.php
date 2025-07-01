@@ -1,12 +1,12 @@
-<?php 
-// File: app/Views/layout/admin_pemesanan.php (Versi Revisi - Benar)
+<?php
+// File: app/Views/layout/submenu_layout.php (Versi Final dengan Tombol Kembali yang Benar)
 ?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pemesanan - Djaya Aspalt Admin</title>
+    <title><?= esc($page_title ?? 'Admin - Djaya Aspalt') ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -19,15 +19,28 @@
             border-right: 1px solid #dee2e6;
             flex-shrink: 0;
         }
-        .sub-sidebar .sidebar-title {
-            font-weight: 600;
-            margin-bottom: 2rem;
+        /* Style untuk tombol kembali yang benar */
+        .sidebar-back-button {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: black;
+            margin-bottom: 1.5rem;
+        }
+        .sidebar-back-button img {
+            width: 32px; /* Ukuran ikon normal */
+            height: 32px;
+            margin-right: 10px;
+        }
+        .sidebar-back-button h5 {
+            margin: 0;
+            font-weight: 600; /* Ukuran teks normal */
             font-size: 1.25rem;
         }
         .sub-sidebar .nav-link {
             color: #555;
             font-weight: 500;
-            padding: 0.75rem 0.25rem;
+            padding: 0.75rem;
             border-left: 3px solid transparent;
         }
         .sub-sidebar .nav-link:hover, .sub-sidebar .nav-link.active {
@@ -43,7 +56,6 @@
             justify-content: space-between;
             align-items: center;
             height: 70px;
-            flex-shrink: 0;
         }
         .main-content { padding: 2rem; background-color: #FFDAB9; flex-grow: 1; }
     </style>
@@ -51,19 +63,21 @@
 <body>
     <div class="main-wrapper">
         <div class="sub-sidebar">
-            <div class="sidebar-header" style="padding: 0 0.25rem 1rem 0.25rem; margin-bottom: 1rem;">
-                <a href="<?= base_url('admin') ?>" style="text-decoration: none; color: black; display: flex; align-items: center;">
-                    <img src="<?= base_url('assets/Back-01.png') ?>" alt="Back" style="width: 32px; height: 32px; margin-right: 10px;">
-                    <h4 style="margin: 0; font-weight: 600;">Pemesanan</h4>
-                </a>
-            </div>
+            
+            <a href="javascript:history.back()" class="sidebar-back-button">
+                <img src="<?= base_url('assets/Back-01.png') ?>" alt="Back">
+                <h5><?= esc($page_title ?? 'Kembali') ?></h5>
+            </a>
 
             <ul class="nav flex-column">
                 <li class="nav-item">
                     <a class="nav-link" href="<?= base_url('admin/cek-paket') ?>">Cek Paket</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="<?= base_url('admin/cek-stok') ?>">Cek Stok</a>
+                    <a class="nav-link" href="<?= base_url('admin/cek-stok/alat-berat') ?>">Cek Stok Alat</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="<?= base_url('admin/cek-stok/material') ?>">Cek Stok Material</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="<?= base_url('admin/cek-pekerja') ?>">Cek Pekerja</a>

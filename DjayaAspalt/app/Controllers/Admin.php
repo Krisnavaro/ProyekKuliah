@@ -380,29 +380,40 @@ class Admin extends BaseController
     }
 
     public function updateAlat($id)
-{
-    // ... (kode validasi Anda)
+    {
+        $model = new AlatModel();
+        $data = $this->request->getPost();
 
-    $model = new AlatModel();
-    $data = $this->request->getPost();
+        // Logika untuk upload gambar baru jika ada
+        $gambar = $this->request->getFile('gambar_alat');
+        if ($gambar && $gambar->isValid() && !$gambar->hasMoved()) {
+            // Hapus gambar lama jika ada untuk menghemat ruang
+            $alatLama = $model->find($id);
+            if ($alatLama && !empty($alatLama['gambar_alat']) && file_exists(FCPATH . 'uploads/alat/' . $alatLama['gambar_alat'])) {
+                unlink(FCPATH . 'uploads/alat/' . $alatLama['gambar_alat']);
+            }
 
-    $gambar = $this->request->getFile('gambar_alat');
-    if ($gambar && $gambar->isValid() && !$gambar->hasMoved()) {
-        // Hapus gambar lama jika ada
-        $alatLama = $model->find($id);
-        if ($alatLama && $alatLama['gambar_alat'] && file_exists(FCPATH . 'uploads/alat/' . $alatLama['gambar_alat'])) {
-            unlink(FCPATH . 'uploads/alat/' . $alatLama['gambar_alat']);
+            // Pindahkan gambar baru dan update nama filenya di data
+            $newName = $gambar->getRandomName();
+            $gambar->move(FCPATH . 'uploads/alat', $newName);
+            $data['gambar_alat'] = $newName;
         }
 
-        $newName = $gambar->getRandomName();
-        $gambar->move(FCPATH . 'uploads/alat', $newName);
-        $data['gambar_alat'] = $newName;
-    }
+        // Update data di database
+        $model->update($id, $data);
 
-    $model->update($id, $data);
-    session()->setFlashdata('success', 'Data alat berhasil diperbarui.');
-    return redirect()->to('/admin/alat');
-}
+        // Set pesan sukses
+        session()->setFlashdata('success', 'Data alat berhasil diperbarui.');
+
+        // **REVISI UTAMA ADA DI SINI**
+        // Redirect ke halaman yang sesuai berdasarkan kategori
+        $kategori = $this->request->getPost('kategori');
+        if ($kategori === 'Material') {
+            return redirect()->to('/admin/material');
+        } else {
+            return redirect()->to('/admin/alat-berat');
+        }
+    }
 
     public function hapusAlat($id)
     {

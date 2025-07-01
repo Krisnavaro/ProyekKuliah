@@ -43,7 +43,7 @@
                 </a>
             </div>
             <div class="sidebar-menu">
-                </div>
+            </div>
         </div>
         <div class="admin-main-content-wrapper">
             <div class="admin-topbar">

@@ -39,8 +39,8 @@
                 <?php if (empty($alat_list)): ?>
                     <tr>
                         <td colspan="6" class="p-5 text-center">
-                            <h5 class="text-danger">Tidak Ada Data Alat</h5>
-                            <p>Silakan tambahkan data alat baru.</p>
+                            <h5 class="text-danger">Tidak Ada Data</h5>
+                            <p>Silakan tambahkan data baru.</p>
                         </td>
                     </tr>
                 <?php else: ?>
@@ -61,10 +61,17 @@
                                 ?>
                                 <span class="badge <?= $badge_class ?>"><?= $status ?></span>
                             </td>
-                            <td><?= esc($alat['stok_alat']) ?></td>
+                            <td>
+                                <?= esc($alat['stok_alat']) ?>
+                                <?php if ($alat['kategori'] === 'Material'): ?>
+                                    ton
+                                <?php else: ?>
+                                    unit
+                                <?php endif; ?>
+                            </td>
                             <td class="action-buttons">
                                 <a href="<?= base_url('admin/alat/edit/' . $alat['id_alat']) ?>" class="btn btn-warning btn-sm">Ubah</a>
-                                <a href="<?= base_url('admin/alat/hapus/' . $alat['id_alat']) ?>" class="btn btn-danger btn-sm" onclick="return confirm('Anda yakin ingin menghapus alat ini?')">Hapus</a>
+                                <a href="<?= base_url('admin/alat/hapus/' . $alat['id_alat']) ?>" class="btn btn-danger btn-sm" onclick="return confirm('Anda yakin ingin menghapus item ini?')">Hapus</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>

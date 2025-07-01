@@ -7,8 +7,6 @@
         <form action="<?= base_url('admin/alat/simpan') ?>" method="post" enctype="multipart/form-data">
             <?= csrf_field() ?>
             
-            <input type="hidden" name="mode" value="baru">
-
             <div class="mb-3">
                 <label for="kategori" class="form-label fw-bold">Pilih Kategori</label>
                 <select name="kategori" id="kategori" class="form-select" required>
@@ -47,7 +45,7 @@
             <input type="hidden" name="cek_alat" value="Tersedia">
             <div class="mt-4">
                 <button type="submit" class="btn btn-primary">Simpan</button>
-                <a href="<?= base_url('admin/alat') ?>" class="btn btn-secondary">Batal</a>
+                <a href="javascript:history.back()" class="btn btn-secondary">Batal</a>
             </div>
         </form>
     </div>

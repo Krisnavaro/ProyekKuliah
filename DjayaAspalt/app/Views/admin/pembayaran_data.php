@@ -41,7 +41,9 @@
                     <?php foreach ($pembayaran_list as $item): ?>
                         <tr>
                             <td><?= esc($item['id_bayar']) ?></td>
-                            <td><?= esc($item['nama_pelanggan']) ?></td>
+                            
+                            <td><?= esc($item['nama_lengkap']) ?></td>
+
                             <td>Rp. <?= number_format($item['total_harga'] ?? 0, 0, ',', '.') ?></td>
                             <td><?= esc(date('d M Y', strtotime($item['tanggal_pembayaran']))) ?></td>
                             <td><span class="badge bg-info"><?= esc($item['metode_pembayaran']) ?></span></td>
